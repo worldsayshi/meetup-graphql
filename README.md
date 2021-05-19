@@ -7,6 +7,9 @@
 
 ## Steps
 
+### Init new 
+
 1. Go to `backend` folder and start docker-compose - `docker-compose up`
-1. Init hasura - `hasura init`
-2. 
+2. Init hasura - `hasura init <name>`
+3. Start console - `cd <name> && hasura console`
+4. 
