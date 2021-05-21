@@ -2,7 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
 import reportWebVitals from './reportWebVitals';
-import Component from "./components/ChatWindow/ChatWindow.fixture";
+import Component from "./components/StrategyWindow/StrategyWindow.fixture";
 
 ReactDOM.render(
   <Component />,

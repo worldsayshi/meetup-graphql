@@ -1,0 +1,16 @@
+query GameMap {
+  nodes {
+    id
+    position
+  }
+  edges {
+    from {
+      id
+      position
+    }
+    to {
+      id
+      position
+    }
+  }
+}

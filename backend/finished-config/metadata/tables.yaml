@@ -1,1 +1,3 @@
-[]
+- table:
+    schema: public
+    name: chat_messages
