@@ -63,8 +63,12 @@ function OutlineMaterial() {
                          fragmentShader={fragmentShader} vertexShader={vertexShader} />;
 }
 
-type SphereProps = (MeshProps | { onDragStart?: (dragType: DragType) => void })
-  & { position: Vector3, size?: number };
+type SphereProps = (MeshProps | {
+  onDragStart?: (event: PointerEvent) => void
+}) & {
+  position: Vector3,
+  size?: number
+};
 
 export default function Sphere(props: SphereProps) {
 
@@ -86,20 +90,16 @@ export default function Sphere(props: SphereProps) {
       {...props}
       ref={mesh}
       scale={active ? [1.5, 1.5, 1.5] : [1, 1, 1]}
-      //onClick={(event) => setActive(!active)}
       onPointerDown={onDragStart && ((event) => {
         event.stopPropagation();
         const {metaKey, ctrlKey, altKey, shiftKey} = event;
-        //console.log("event", {metaKey, ctrlKey, altKey, shiftKey});
-        onDragStart(ctrlKey ? "Connect": "Move");
+        onDragStart(event);
       })}
       onPointerOver={(event) => setHover(true)}
       onPointerOut={(event) => setHover(false)}
     >
-      {/*<boxBufferGeometry args={[1, 1, 1]} />*/}
       <sphereBufferGeometry args={[props.size || 0.7, 30, 30 ]} attach="geometry" />
       <OutlineMaterial />
-      {/*<meshStandardMaterial color={hovered ? 'hotpink' : 'orange'} />*/}
     </mesh>
   )
 }

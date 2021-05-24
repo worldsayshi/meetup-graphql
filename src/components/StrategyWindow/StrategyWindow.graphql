@@ -1,16 +1,22 @@
 query GameMap {
   nodes {
-    id
-    position
+    ...Node
   }
   edges {
-    from {
-      id
-      position
-    }
-    to {
-      id
-      position
-    }
+    ...Edge
+  }
+}
+
+fragment Node on nodes {
+  id
+  position
+}
+
+fragment Edge on edges {
+  from {
+    ...Node
+  }
+  to {
+    ...Node
   }
 }
