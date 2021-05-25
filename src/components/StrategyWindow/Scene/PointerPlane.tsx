@@ -9,6 +9,9 @@ interface PointerPlaneProps {
 export default function PointerPlane({pointerMoved}: PointerPlaneProps) {
   return (
     <>
+    <group
+      rotation={[-Math.PI/2, 0, 0]}
+    >
       <mesh
         rotation={[0, 0, 0]}
         position={[0, 0, 0]}
@@ -20,7 +23,10 @@ export default function PointerPlane({pointerMoved}: PointerPlaneProps) {
         />
         <meshStandardMaterial wireframe={true} attach="material" color="blue"/>
       </mesh>
-      <gridHelper rotation={[-Math.PI/2, 0, 0]} />
+      </group>
+      <gridHelper
+        //rotation={[-Math.PI/2, 0, 0]}
+      />
     </>
   );
 }

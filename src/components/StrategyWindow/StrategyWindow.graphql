@@ -5,6 +5,17 @@ query GameMap {
   edges {
     ...Edge
   }
+  armies {
+    ...Army
+  }
+}
+
+fragment Army on armies {
+  id
+  planned_path
+  current_node {
+    ...Node
+  }
 }
 
 fragment Node on nodes {

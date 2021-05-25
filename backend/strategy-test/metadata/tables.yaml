@@ -1,0 +1,49 @@
+- table:
+    schema: public
+    name: armies
+  object_relationships:
+  - name: current_node
+    using:
+      foreign_key_constraint_on: current_node_id
+  - name: nation
+    using:
+      foreign_key_constraint_on: nation_id
+- table:
+    schema: public
+    name: edges
+  object_relationships:
+  - name: from
+    using:
+      foreign_key_constraint_on: from_id
+  - name: to
+    using:
+      foreign_key_constraint_on: to_id
+- table:
+    schema: public
+    name: nations
+  array_relationships:
+  - name: armies
+    using:
+      foreign_key_constraint_on:
+        column: nation_id
+        table:
+          schema: public
+          name: armies
+- table:
+    schema: public
+    name: nodes
+  array_relationships:
+  - name: from
+    using:
+      foreign_key_constraint_on:
+        column: from_id
+        table:
+          schema: public
+          name: edges
+  - name: to
+    using:
+      foreign_key_constraint_on:
+        column: to_id
+        table:
+          schema: public
+          name: edges

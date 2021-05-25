@@ -2,8 +2,12 @@ import {SceneWrapper} from "./Scene/SceneView";
 import Sphere from "./Scene/Sphere";
 import {NodeFragment, useGameMapQuery} from "../../generated/graphql";
 import { SLine } from "./Scene/QuadLine";
-import {useState} from "react";
+// import React, {useState} from "react";
+import React, { Suspense, useState } from "react";
 import {Vector3} from "./Scene/Types";
+import Cylinder from "./Scene/Cylinder";
+import {ObjectLoader} from "./Scene/ObjectLoader";
+import {Soldier} from "./Soldier";
 
 
 interface GameMap {
@@ -39,7 +43,7 @@ export const StrategyWindow = () => {
         />
       ))}
       {gameMap?.nodes.map((node) => (
-        <Sphere
+        <Cylinder
           onDragStart={(event: PointerEvent) => {
             setDragging(true);
             setDragNode(node)
@@ -47,6 +51,11 @@ export const StrategyWindow = () => {
           position={node.position}
         />
       ))}
+
+      {}
+      <Soldier />
+
+      {/* TODO Load obj file from assets/soldier */}
     </SceneWrapper>
   );
 }

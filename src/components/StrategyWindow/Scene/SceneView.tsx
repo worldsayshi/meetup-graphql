@@ -12,9 +12,15 @@ export function SceneWrapper({ children, onPointerUp, pointerMoved, orbitEnabled
   orbitEnabled?: boolean;
 }) {
   return (
-    <Canvas onPointerUp={onPointerUp}>
+    <Canvas
+      pixelRatio={window.devicePixelRatio}
+      onPointerUp={onPointerUp}
+      camera={{
+        position: [5, 5, 5]
+      }}
+    >
       <ambientLight/>
-      <pointLight position={[10, 10, 10]}/>
+      <pointLight position={[0, 2, 10]}/>
       {children}
       <PointerPlane
         pointerMoved={pointerMoved}
