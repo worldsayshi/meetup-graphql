@@ -1,25 +1,21 @@
 import {SceneWrapper} from "./Scene/SceneView";
-import Sphere from "./Scene/Sphere";
-import {NodeFragment, useGameMapQuery} from "../../generated/graphql";
+import {NodeFragment, useGameSessionQuery} from "../../generated/graphql";
 import { SLine } from "./Scene/QuadLine";
-// import React, {useState} from "react";
-import React, { Suspense, useState } from "react";
-import {Vector3} from "./Scene/Types";
+import React, { useState } from "react";
+import { Vector3 } from "./Scene/Types";
 import Cylinder from "./Scene/Cylinder";
-import {ObjectLoader} from "./Scene/ObjectLoader";
-import {Soldier} from "./Soldier";
+import { Soldier } from "./Soldier";
 
-
-interface GameMap {
-
-}
 
 
 export const StrategyWindow = () => {
   const [dragNode, setDragNode] = useState<NodeFragment | null>();
   const [dragPoint, setDragPoint] = useState<Vector3 | null>();
   const [dragging, setDragging] = useState(false);
-  const { data: gameMap } = useGameMapQuery();
+  const { data: gameSessions } = useGameSessionQuery();
+  // const { data: gameMap } = useGameMapQuery();
+
+  const [gameSession] = gameSessions?.sessions || [];
   return (
     <SceneWrapper
       orbitEnabled={!dragging}
@@ -36,14 +32,18 @@ export const StrategyWindow = () => {
         start={dragNode.position}
         end={dragPoint}
       />}
-      {gameMap?.edges.map(({from, to}) => (
+
+
+      {gameSession?.edges.map(({id, from, to}) => (
         <SLine
+          key={"edge_"+id}
           start={from.position}
           end={to.position}
         />
       ))}
-      {gameMap?.nodes.map((node) => (
+      {gameSession?.nodes.map((node) => (
         <Cylinder
+          key={"node_"+node.id}
           onDragStart={(event: PointerEvent) => {
             setDragging(true);
             setDragNode(node)
@@ -51,11 +51,14 @@ export const StrategyWindow = () => {
           position={node.position}
         />
       ))}
+      {gameSession?.armies && gameSession?.armies.map(({id, current_node}) => (
+        <Soldier
+          key={"army_"+id}
+          position={current_node.position}
+        />
+      ))}
 
-      {}
-      <Soldier />
 
-      {/* TODO Load obj file from assets/soldier */}
     </SceneWrapper>
   );
 }

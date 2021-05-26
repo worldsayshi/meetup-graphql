@@ -1,0 +1,1 @@
+CREATE TABLE "public"."session_configs"("id" integer NOT NULL, "map_scale" numeric NOT NULL, PRIMARY KEY ("id") ); COMMENT ON TABLE "public"."session_configs" IS E'All variables that are constant over the duration of a session';

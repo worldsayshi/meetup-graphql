@@ -16,7 +16,7 @@ export const Soldier = ({position}: SoliderProps) => {
     >
       <Suspense fallback={<Sphere position={[0,1,0]} size={0.3} />}>
         <group rotation={[-Math.PI/2, 0, 0]}>
-          <ObjectLoader position={[0,0,0]}
+          <ObjectLoader position={[0,-.135,0.1]}
                         mtlUrl="/soldier/14070_WWII_Soldier_with_Rife_v1_L1.mtl"
                         objUrl="/soldier/14070_WWII_Soldier_with_Rife_v1_L1.obj"
           />

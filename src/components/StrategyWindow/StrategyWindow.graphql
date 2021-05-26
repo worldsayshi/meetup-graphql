@@ -1,4 +1,10 @@
-query GameMap {
+query GameSession {
+  sessions(where:{id:{_eq: 1}}) {
+    ...Session
+  }
+}
+
+fragment Session on sessions {
   nodes {
     ...Node
   }
@@ -24,6 +30,7 @@ fragment Node on nodes {
 }
 
 fragment Edge on edges {
+  id
   from {
     ...Node
   }
