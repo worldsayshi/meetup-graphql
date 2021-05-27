@@ -25,3 +25,7 @@ yarn-error.log*
 # Additions
 backend/node_modules
 /src/generated/graphql.tsx
+/backend/db_data/
+**/.idea/workspace.xml
+**/.idea/tasks.xml
+**/.idea/**.iws
