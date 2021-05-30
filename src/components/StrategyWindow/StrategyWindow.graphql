@@ -4,7 +4,19 @@ query GameSession {
   }
 }
 
+mutation SetArmyTarget($armyId: Int, $nodeId: Int) {
+  update_armies(
+    where: {id: {_eq: $armyId}},
+    _set: {planned_node: $nodeId}) {
+    returning {
+      id
+      planned_node
+    }
+  }
+}
+
 fragment Session on sessions {
+	elapsed_ticks
   nodes {
     ...Node
   }

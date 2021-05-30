@@ -65,6 +65,7 @@ function OutlineMaterial() {
 
 type SphereProps = (MeshProps | {
   onDragStart?: (event: PointerEvent) => void
+  onRightPointerDown?: (event: PointerEvent) => void
 }) & {
   position: Vector3,
   size?: number
@@ -72,7 +73,7 @@ type SphereProps = (MeshProps | {
 
 export default function Cylinder(props: SphereProps) {
 
-  const { onDragStart } = props;
+  const { onDragStart, onRightPointerDown } = props;
   // This reference will give us direct access to the mesh
   const mesh = useRef();
 
@@ -92,8 +93,14 @@ export default function Cylinder(props: SphereProps) {
       scale={active ? [1.5, 1.5, 1.5] : [1, 1, 1]}
       onPointerDown={onDragStart && ((event) => {
         event.stopPropagation();
-        const {metaKey, ctrlKey, altKey, shiftKey} = event;
-        onDragStart(event);
+        const {metaKey, ctrlKey, altKey, shiftKey, } = event;
+        //
+        console.log("Cylinder event button: ", event.button);
+        if (event.button === 0) {
+          onDragStart(event);
+        } else if (event.button === 2) {
+          onRightPointerDown(event);
+        }
       })}
       onPointerOver={(event) => setHover(true)}
       onPointerOut={(event) => setHover(false)}
