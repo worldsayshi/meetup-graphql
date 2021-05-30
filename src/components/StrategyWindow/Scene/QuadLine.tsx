@@ -3,6 +3,7 @@ import React from 'react';
 import * as THREE from "three/build/three.module";
 import {Line, CubicBezierLine, QuadraticBezierLine} from "@react-three/drei";
 import {Vector3} from "./Types";
+import {Color} from "react-three-fiber";
 
 // For Fat lines:
 // Look at this example: https://codesandbox.io/s/react-three-fiber-threejs-meshline-example-vl221?file=/src/index.js
@@ -11,6 +12,9 @@ import {Vector3} from "./Types";
 interface SLineProps {
   start: Vector3;
   end: Vector3;
+  color?: Color | string | number;
+  lineWidth?: number;
+  dashed?: boolean;
 }
 
 export function SLine (props: SLineProps) {
@@ -19,10 +23,10 @@ export function SLine (props: SLineProps) {
       {/* @ts-ignore */}
       <Line
         points={[props.start, props.end]}
-        {...props}
         color="black"
         lineWidth={5}
         dashed={false}
+        {...props}
       />
     </>)
 }

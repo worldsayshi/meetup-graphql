@@ -11,6 +11,7 @@ import { Soldier } from "./Soldier";
 export const StrategyWindow = () => {
   const [dragNode, setDragNode] = useState<NodeFragment | null>();
   const [dragPoint, setDragPoint] = useState<Vector3 | null>();
+  const [selectedArmy, setSelectedArmy] = useState<number | null>();
   const [dragging, setDragging] = useState(false);
   const { data: gameSessions } = useGameSessionQuery();
   // const { data: gameMap } = useGameMapQuery();
@@ -28,10 +29,7 @@ export const StrategyWindow = () => {
         setDragPoint(null);
         setDragging(false);
       }}>
-      {dragNode && dragPoint && <SLine
-        start={dragNode.position}
-        end={dragPoint}
-      />}
+
 
 
       {gameSession?.edges.map(({id, from, to}) => (
@@ -54,11 +52,18 @@ export const StrategyWindow = () => {
       {gameSession?.armies && gameSession?.armies.map(({id, current_node}) => (
         <Soldier
           key={"army_"+id}
+          selected={selectedArmy === id}
           position={current_node.position}
+          onSelect={() => setSelectedArmy(id)}
         />
       ))}
 
-
+      {dragNode && dragPoint && <SLine
+        start={dragNode.position}
+        end={dragPoint}
+        color="limegreen"
+        lineWidth={10}
+      />}
     </SceneWrapper>
   );
 }
