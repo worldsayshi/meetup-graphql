@@ -29,9 +29,12 @@ export const Soldier = ({position, selected, onSelect}: SoliderProps) => {
 
 
       <Suspense fallback={<Sphere position={[0,1,0]} size={0.3} />}>
-        <group onClick={(event) => {
-          onSelect && onSelect(event);
-        }} rotation={[-Math.PI/2, 0, 0]}>
+        <group
+          onClick={(event) => {
+            onSelect && onSelect(event);
+          }}
+          rotation={[-Math.PI/2, 0, 0]}
+        >
           {selected && <mesh>
             <torusGeometry args={[0.65, 0.05, 5, 36]} />
             <meshStandardMaterial color={"limegreen"} />
