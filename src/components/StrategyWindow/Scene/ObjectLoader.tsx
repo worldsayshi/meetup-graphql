@@ -16,6 +16,7 @@ export const ObjectLoader = ({ position, mtlUrl, objUrl }: ObjectLoaderProps) =>
   const materials = useLoader(MTLLoader, mtlUrl)
   const object = useLoader(OBJLoader, objUrl, loader => {
     materials.preload()
+    // @ts-ignore
     loader.setMaterials(materials)
   })
   return <primitive position={position} object={object} />

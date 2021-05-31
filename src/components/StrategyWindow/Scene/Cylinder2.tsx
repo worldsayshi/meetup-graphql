@@ -1,18 +1,23 @@
 import React, {useRef, useState} from "react";
-// @ts-ignore
-import * as THREE from "three/build/three.module";
-import {MeshProps} from "react-three-fiber";
+import * as THREE from "three";
 import {DragType, Vector3} from "./Types";
+import {PointerEvent} from "react-three-fiber/canvas";
 
 
 
 
-type CylinderProps = (MeshProps | {
+/*type CylinderProps = (MeshProps | {
   onDragStart?: (event: PointerEvent) => void
 }) & {
   position: Vector3,
   size?: number
-};
+};*/
+
+interface CylinderProps {
+  onDragStart?: (event: PointerEvent) => void;
+  position: Vector3;
+  size?: number;
+}
 
 export default function Cylinder2(props: CylinderProps) {
 

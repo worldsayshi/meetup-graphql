@@ -3,6 +3,7 @@ import React, {useRef, useState} from "react";
 import * as THREE from "three/build/three.module";
 import {MeshProps} from "react-three-fiber";
 import {DragType, Vector3} from "./Types";
+import {PointerEvent} from "react-three-fiber/canvas";
 
 // From: https://codesandbox.io/s/y7f9k?file=/src/index.js
 
@@ -63,12 +64,11 @@ function OutlineMaterial() {
                          fragmentShader={fragmentShader} vertexShader={vertexShader} />;
 }
 
-type SphereProps = (MeshProps | {
-  onDragStart?: (event: PointerEvent) => void
-}) & {
-  position: Vector3,
-  size?: number
-};
+interface SphereProps extends MeshProps {
+  onDragStart?: (event: PointerEvent) => void;
+  position: Vector3;
+  size?: number;
+}
 
 export default function Sphere(props: SphereProps) {
 

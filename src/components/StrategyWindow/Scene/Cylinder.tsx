@@ -1,8 +1,7 @@
 import React, {useRef, useState} from "react";
-// @ts-ignore
-import * as THREE from "three/build/three.module";
+import * as THREE from "three";
+import {PointerEvent} from "react-three-fiber/canvas";
 import {MeshProps} from "react-three-fiber";
-import {DragType, Vector3} from "./Types";
 
 // From: https://codesandbox.io/s/y7f9k?file=/src/index.js
 
@@ -63,15 +62,20 @@ function OutlineMaterial() {
                          fragmentShader={fragmentShader} vertexShader={vertexShader} />;
 }
 
-type SphereProps = (MeshProps | {
+/*type SphereProps = (MeshProps | {
   onDragStart?: (event: PointerEvent) => void
   onRightPointerDown?: (event: PointerEvent) => void
 }) & {
   position: Vector3,
   size?: number
-};
+};*/
 
-export default function Cylinder(props: SphereProps) {
+interface CylinderProps extends MeshProps {
+  onDragStart?: (event: PointerEvent) => void
+  onRightPointerDown?: (event: PointerEvent) => void
+}
+
+export default function Cylinder(props: CylinderProps) {
 
   const { onDragStart, onRightPointerDown } = props;
   // This reference will give us direct access to the mesh
@@ -97,9 +101,9 @@ export default function Cylinder(props: SphereProps) {
         //
         console.log("Cylinder event button: ", event.button);
         if (event.button === 0) {
-          onDragStart(event);
-        } else if (event.button === 2) {
-          onRightPointerDown(event);
+          onDragStart && onDragStart(event);
+        } else if (event && event.button === 2) {
+          onRightPointerDown && onRightPointerDown(event);
         }
       })}
       onPointerOver={(event) => setHover(true)}
