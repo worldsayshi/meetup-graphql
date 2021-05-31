@@ -31,16 +31,24 @@ export const StrategyWindow = () => {
   const [dragging, setDragging] = useState(false);
   const { data: gameSessions } = useGameSessionQuery();
   const [setArmyTargetMutation] = useSetArmyTargetMutation();
-  // const { data: gameMap } = useGameMapQuery();
   const [gameState, setGameState] = useState<GameStateI | null>(null);
+  const [nodesLookup, setNodesLookup] = useState<NodesLookup | null>(null);
 
 
   const [gameSession] = gameSessions?.sessions || [];
+
+  type NodesLookup = {
+    [key: number]: NodeFragment
+  };
 
   useEffect(() => {
     if(gameSession) {
       const gameState = initGameState(gameSession);
       setGameState(gameState);
+      setNodesLookup(gameSession.nodes.reduce((nl: NodesLookup, node) => {
+        nl[node.id] = node;
+        return nl;
+      }, {}))
     }
   }, [gameSession]);
 
@@ -51,14 +59,17 @@ export const StrategyWindow = () => {
         update_armies: {
           returning: [{
             id: armyId,
-            planned_node: nodeId,
-          }]
+            planned_node_id: nodeId,
+          }],
         }}
     }).catch((err) => {
       console.error(err);
     });
     //console.log("setArmyTarget", armyId, nodeId);
   }
+
+
+
 
   return (
     <SceneWrapper
@@ -100,16 +111,23 @@ export const StrategyWindow = () => {
             position={node.position}
           />
         ))}
-        {gameSession?.armies && gameSession?.armies.map(({id, current_node}) => (
-          <Soldier
-            key={"army_"+id}
-            selected={selectedArmy === id}
-            position={current_node.position}
-            onSelect={() => {
-              console.log("select")
-              setSelectedArmy(id)
-            }}
-          />
+        {gameSession?.armies && gameSession?.armies.map(({id, current_node, planned_node_id}) => (
+          <React.Fragment key={"army_"+id}>
+            <Soldier
+              key={"army_"+id}
+              selected={selectedArmy === id}
+              position={current_node.position}
+              onSelect={() => {
+                console.log("select")
+                setSelectedArmy(id)
+              }}
+            />
+            {nodesLookup && planned_node_id && <SLine
+              color="yellow"
+              start={current_node.position}
+              end={nodesLookup[planned_node_id]?.position}
+            />}
+          </React.Fragment>
         ))}
 
         {dragNode && dragPoint && <SLine

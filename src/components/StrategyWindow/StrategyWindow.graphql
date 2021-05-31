@@ -7,10 +7,10 @@ query GameSession {
 mutation SetArmyTarget($armyId: Int, $nodeId: Int) {
   update_armies(
     where: {id: {_eq: $armyId}},
-    _set: {planned_node: $nodeId}) {
+    _set: {planned_node_id: $nodeId}) {
     returning {
       id
-      planned_node
+      planned_node_id
     }
   }
 }
@@ -31,6 +31,7 @@ fragment Session on sessions {
 fragment Army on armies {
   id
   planned_path
+  planned_node_id
   current_node {
     ...Node
   }
