@@ -6,14 +6,17 @@ import {
   useSetArmyTargetMutation
 } from "../../generated/graphql";
 import {SLine} from "./Scene/QuadLine";
-import React, {createContext, useEffect, useState} from "react";
+import React, {createContext, useContext, useEffect, useState} from "react";
 import {Vector3} from "./Scene/Types";
 import Cylinder from "./Scene/Cylinder";
 import {Soldier} from "./Soldier";
-import {AppBar, IconButton, Toolbar} from "@material-ui/core";
+import {AppBar, Icon, IconButton, Toolbar} from "@material-ui/core";
 import PlayArrowIcon from '@material-ui/icons/PlayArrow';
 import PauseIcon from '@material-ui/icons/Pause';
 import {PointerEvent} from "react-three-fiber/canvas";
+import {ThemeContext} from "../common/ThemeWrapper";
+import BrightnessHighIcon from '@material-ui/icons/BrightnessHigh';
+import BrightnessLowIcon from '@material-ui/icons/BrightnessLow';
 
 
 interface GameStateI {
@@ -75,7 +78,7 @@ export const StrategyWindow = () => {
   }
 
 
-
+  const themeContext = useContext(ThemeContext);
 
   return (
     <>
@@ -84,6 +87,9 @@ export const StrategyWindow = () => {
           <IconButton edge="start" color="inherit" aria-label="play">
             {gameState && (gameState.running ? <PauseIcon /> : <PlayArrowIcon/>)}
           </IconButton>
+          {themeContext && <IconButton color="inherit"  onClick={() => themeContext.setLightMode(!themeContext.lightMode)}>
+            {themeContext.lightMode ? <BrightnessHighIcon /> : <BrightnessLowIcon />}
+          </IconButton>}
         </Toolbar>
       </AppBar>
       <SceneWrapper
