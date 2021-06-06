@@ -3,15 +3,28 @@ import {Canvas} from "react-three-fiber";
 import PointerPlane from "./PointerPlane";
 import CustomOrbitControls from "./CustomOrbitControls";
 import {Vector3} from "./Types";
+import {useContextBridge} from "@react-three/drei";
 
-
-export function SceneWrapper({ children, onPointerUp, onClick, pointerMoved, orbitEnabled = true }: {
+interface SceneWrapperProps {
   children: React.ReactNode,
   onPointerUp?: PointerEventHandler,
   onClick?: MouseEventHandler,
   pointerMoved?: (point: {x: number, y: number, z: number}) => void;
   orbitEnabled?: boolean;
-}) {
+  bridgeContexts?: React.Context<any>[];
+}
+
+export function SceneWrapper(props: SceneWrapperProps) {
+  const {
+    children,
+    onPointerUp,
+    onClick,
+    pointerMoved,
+    orbitEnabled = true,
+    bridgeContexts = [],
+  } = props;
+  const ContextBridge = useContextBridge(...bridgeContexts)
+
   return (
     <Canvas
       pixelRatio={window.devicePixelRatio}
@@ -21,13 +34,15 @@ export function SceneWrapper({ children, onPointerUp, onClick, pointerMoved, orb
         position: [5, 5, 5]
       }}
     >
-      <ambientLight/>
-      <pointLight position={[0, 2, 10]}/>
-      {children}
-      <PointerPlane
-        pointerMoved={pointerMoved}
-      />
-      <CustomOrbitControls enabled={orbitEnabled}/>
+      <ContextBridge>
+        <ambientLight/>
+        <pointLight position={[0, 2, 10]}/>
+        {children}
+        <PointerPlane
+          pointerMoved={pointerMoved}
+        />
+        <CustomOrbitControls enabled={orbitEnabled}/>
+      </ContextBridge>
     </Canvas>
   );
 }

@@ -40,7 +40,7 @@ function Edges(props: { edges: EdgeFragment[] }) {
 
 function Armies() {
   const gameState = useContext(GameState);
-  console.log("gameState?.armies", gameState?.armies);
+  console.log("useContext gameState", gameState);
   return (
     <>
       {gameState && Object.values(gameState?.armies).map(({id, current_node, planned_node_id}) => (
@@ -99,6 +99,7 @@ export const StrategyWindow = () => {
     <GameSimulator gameSession={gameSession}>
       <TopGameBar />
       <SceneWrapper
+        bridgeContexts={[GameState]}
         orbitEnabled={!dragging}
         pointerMoved={(point) => {
           if(dragging) {
