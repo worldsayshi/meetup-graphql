@@ -1,24 +1,16 @@
 import {SceneWrapper} from "./Scene/SceneView";
 import {
-  ArmyFragment,
   EdgeFragment,
   NodeFragment,
-  SessionFragment,
   useGameSessionQuery,
   useSetArmyTargetMutation
 } from "../../generated/graphql";
 import {SLine} from "./Scene/QuadLine";
-import React, {createContext, ReactNode, useContext, useEffect, useState} from "react";
+import React, {useContext, useState} from "react";
 import {Vector3} from "./Scene/Types";
 import Cylinder from "./Scene/Cylinder";
 import {Soldier} from "./GameComponents/Soldier";
-import {AppBar, Icon, IconButton, Toolbar} from "@material-ui/core";
-import PlayArrowIcon from '@material-ui/icons/PlayArrow';
-import PauseIcon from '@material-ui/icons/Pause';
 import {PointerEvent} from "react-three-fiber/canvas";
-import {ThemeContext} from "../common/ThemeWrapper";
-import BrightnessHighIcon from '@material-ui/icons/BrightnessHigh';
-import BrightnessLowIcon from '@material-ui/icons/BrightnessLow';
 import {GameSimulator, GameState} from "./GameComponents/GameSimulator";
 import {TopGameBar} from "./GameComponents/TopGameBar";
 

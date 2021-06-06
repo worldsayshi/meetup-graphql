@@ -2,7 +2,6 @@ import React, {MouseEventHandler, PointerEventHandler} from 'react';
 import {Canvas} from "react-three-fiber";
 import PointerPlane from "./PointerPlane";
 import CustomOrbitControls from "./CustomOrbitControls";
-import {Vector3} from "./Types";
 import {useContextBridge} from "@react-three/drei";
 
 interface SceneWrapperProps {
