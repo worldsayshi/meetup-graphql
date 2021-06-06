@@ -40,7 +40,6 @@ function Edges(props: { edges: EdgeFragment[] }) {
 
 function Armies() {
   const gameState = useContext(GameState);
-  console.log("useContext gameState", gameState);
   return (
     <>
       {gameState && Object.values(gameState?.armies).map(({id, current_node, planned_node_id}) => (

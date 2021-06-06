@@ -48,13 +48,10 @@ export function GameSimulator(props: { gameSession: SessionFragment, children: R
   useEffect(() => {
     if(gameSession) {
       const gameState = initGameState(gameSession);
-      console.log("setGameState", gameState);
       setGameState(gameState);
       //setNodesLookup()
     }
   }, [gameSession]);
-  
-  console.log("new gameState", gameState)
 
   return (
     <GameState.Provider value={gameState ? {
