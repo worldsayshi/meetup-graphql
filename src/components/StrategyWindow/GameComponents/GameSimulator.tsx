@@ -1,5 +1,6 @@
 import React, {createContext, ReactNode, useEffect, useState} from "react";
 import {ArmyFragment, NodeFragment, SessionFragment} from "../../../generated/graphql";
+import useInterval from "../../common/useInterval";
 
 interface GameStateI {
   ticks: number;
@@ -11,6 +12,7 @@ interface GameStateI {
 
 interface GameStateActions {
   setSelectedArmy: (selectedArmy: number | null) => void;
+  toggleRunning: () => void;
 }
 
 type NodesLookup = {
@@ -39,6 +41,14 @@ function initGameState(gameSession: SessionFragment): GameStateI {
 
 export const GameState = createContext<GameStateI & GameStateActions | null>(null);
 
+function performStep(gameState: GameStateI): GameStateI {
+
+  return {
+    ...gameState,
+    ticks: gameState.running ? gameState.ticks + 1: gameState.ticks,
+  };
+}
+
 export function GameSimulator(props: { gameSession: SessionFragment, children: ReactNode }) {
 
   const {gameSession, children} = props;
@@ -53,6 +63,13 @@ export function GameSimulator(props: { gameSession: SessionFragment, children: R
     }
   }, [gameSession]);
 
+  useInterval(() => {
+    if (gameState !== null) {
+      const newGameState = performStep(gameState);
+      setGameState(newGameState);
+    }
+  }, 100);
+
   return (
     <GameState.Provider value={gameState ? {
       ...gameState,
@@ -61,7 +78,14 @@ export function GameSimulator(props: { gameSession: SessionFragment, children: R
           ...gameState,
           selectedArmy,
         })
-      }} : null}>
+      },
+      toggleRunning: () => {
+        gameState && setGameState({
+          ...gameState,
+          running: !gameState.running,
+        })
+      }
+    } : null}>
       {children}
     </GameState.Provider>
   );
