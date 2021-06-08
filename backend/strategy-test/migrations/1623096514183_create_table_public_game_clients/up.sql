@@ -1,0 +1,1 @@
+CREATE TABLE "public"."game_clients"("id" serial NOT NULL, "game_session_id" integer NOT NULL, PRIMARY KEY ("id") , FOREIGN KEY ("game_session_id") REFERENCES "public"."game_sessions"("id") ON UPDATE restrict ON DELETE restrict); COMMENT ON TABLE "public"."game_clients" IS E'A user client connected to a game session';

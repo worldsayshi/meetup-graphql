@@ -1,5 +1,5 @@
 import {createMuiTheme, MuiThemeProvider} from "@material-ui/core";
-import React, {createContext, ReactNode} from "react";
+import React, {createContext, ReactNode, useEffect, useMemo} from "react";
 import CssBaseline from "@material-ui/core/CssBaseline";
 
 
@@ -30,7 +30,13 @@ interface ThemeContextI {
 export const ThemeContext = createContext<ThemeContextI | null>(null);
 
 export function ThemeWrapper(props: { children: ReactNode }) {
-  const [lightMode, setLightMode] = React.useState(true);
+  const [lightMode, setLightMode] = React.useState(useMemo(() =>
+    localStorage.getItem("lightMode") === "true", []));
+
+  useEffect(() => {
+    localStorage.setItem("lightMode", ""+lightMode);
+  }, [lightMode]);
+
   return (
     <MuiThemeProvider theme={lightMode ? themeLight : themeDark}>
       <CssBaseline />

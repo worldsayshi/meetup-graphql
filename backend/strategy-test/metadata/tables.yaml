@@ -26,6 +26,45 @@
       foreign_key_constraint_on: to_id
 - table:
     schema: public
+    name: game_clients
+- table:
+    schema: public
+    name: game_sessions
+  object_relationships:
+  - name: session_config
+    using:
+      foreign_key_constraint_on: session_config_id
+  array_relationships:
+  - name: armies
+    using:
+      foreign_key_constraint_on:
+        column: session_id
+        table:
+          schema: public
+          name: armies
+  - name: edges
+    using:
+      foreign_key_constraint_on:
+        column: session_id
+        table:
+          schema: public
+          name: edges
+  - name: nations
+    using:
+      foreign_key_constraint_on:
+        column: session_id
+        table:
+          schema: public
+          name: nations
+  - name: nodes
+    using:
+      foreign_key_constraint_on:
+        column: session_id
+        table:
+          schema: public
+          name: nodes
+- table:
+    schema: public
     name: nations
   object_relationships:
   - name: session
@@ -71,39 +110,3 @@
 - table:
     schema: public
     name: session_configs
-- table:
-    schema: public
-    name: sessions
-  object_relationships:
-  - name: session_config
-    using:
-      foreign_key_constraint_on: session_config_id
-  array_relationships:
-  - name: armies
-    using:
-      foreign_key_constraint_on:
-        column: session_id
-        table:
-          schema: public
-          name: armies
-  - name: edges
-    using:
-      foreign_key_constraint_on:
-        column: session_id
-        table:
-          schema: public
-          name: edges
-  - name: nations
-    using:
-      foreign_key_constraint_on:
-        column: session_id
-        table:
-          schema: public
-          name: nations
-  - name: nodes
-    using:
-      foreign_key_constraint_on:
-        column: session_id
-        table:
-          schema: public
-          name: nodes

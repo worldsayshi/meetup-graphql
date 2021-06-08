@@ -65,7 +65,7 @@ export const StrategyWindow = () => {
   const [setArmyTargetMutation] = useSetArmyTargetMutation();
 
 
-  const [gameSession] = gameSessions?.sessions || [];
+  const [gameSession] = gameSessions?.game_sessions || [];
 
 
   function setArmyTarget(armyId: number, nodeId: number) {

@@ -1,6 +1,17 @@
 query GameSession {
-  sessions(where:{id:{_eq: 1}}) {
+  game_sessions(where:{id:{_eq: 1}}) {
     ...Session
+  }
+}
+
+mutation createGameClient($game_session_id: Int) {
+  insert_game_clients(objects:[{
+    game_session_id: $game_session_id
+  }]) {
+    returning {
+      id
+      game_session_id
+    }
   }
 }
 
@@ -15,7 +26,9 @@ mutation SetArmyTarget($armyId: Int, $nodeId: Int) {
   }
 }
 
-fragment Session on sessions {
+fragment Session on game_sessions {
+  id
+  uuid
 	elapsed_ticks
   nodes {
     ...Node
