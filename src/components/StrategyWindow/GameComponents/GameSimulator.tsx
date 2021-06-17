@@ -1,11 +1,16 @@
-import React, {createContext, ReactNode, useContext, useEffect, useState} from "react";
+import React, {createContext, ReactNode, useContext, useEffect, useMemo, useState} from "react";
 import {
   ArmyFragment,
   NodeFragment,
   SessionFragment,
-  useCreateGameClientMutation
+  useCreateGameClientMutation,
+  useGameEventsSubscription, useGameSessionLazyQuery,
+  useGameSessionQuery,
+  useSetArmyTargetMutation
 } from "../../../generated/graphql";
 import useInterval from "../../common/useInterval";
+import {Vector3} from "../Scene/Types";
+
 
 interface GameStateI {
   clientId?: number;
@@ -14,11 +19,30 @@ interface GameStateI {
   nodesLookup: NodesLookup;
   armies: ArmyLookup;
   selectedArmy: number | null;
+
+
+  heartBeatInterval: number;
+  commandOffset: number;
+
+  gameSession: SessionFragment;
+
+
+}
+
+interface UserGameStateI {
+  dragging: boolean;
+  dragPoint: Vector3 | null;
+  dragNode: NodeFragment | null;
 }
 
 interface GameStateActions {
   setSelectedArmy: (selectedArmy: number | null) => void;
-  toggleRunning: () => void;
+  setRunning: (running: boolean) => void;
+  setArmyTarget: (armyId: number, nodeId: number) => void;
+
+  setDragPoint: (dragPoint: Vector3 | null) => void;
+  setDragging: (dragging: boolean) => void;
+  setDragNode: (dragNode: NodeFragment | null) => void;
 }
 
 type NodesLookup = {
@@ -37,6 +61,11 @@ function initGameState(gameSession: SessionFragment): GameStateI {
     : {};
 
   return {
+    // Hmm, hearbeat interval and command offset should probably be in the same unit to be able to
+    // ensure that heartbeat happens x times within a command offset.
+    // But what happens when the game is paused? I guess the heartbeat is not needed then?
+    heartBeatInterval: 10,
+    commandOffset: 40,
     clientId: clientIds[gameSession.id] ?? undefined,
     ticks: gameSession.elapsed_ticks,
     running: false,
@@ -49,11 +78,13 @@ function initGameState(gameSession: SessionFragment): GameStateI {
       return al;
     }, {}),
     selectedArmy: null,
+
+    gameSession,
   }
 }
 
-
-export const GameState = createContext<GameStateI & GameStateActions | null>(null);
+type FullGameState = UserGameStateI & GameStateI & GameStateActions;
+export const GameState = createContext<FullGameState | null>(null);
 
 function performStep(gameState: GameStateI): GameStateI {
 
@@ -84,9 +115,16 @@ function performStep(gameState: GameStateI): GameStateI {
   };
 }
 
+/*
+  1. Send heartbeat.
+  Ever. Listen for heartbeats
+
+  Count ticks, when
+* */
 function GameSyncClient() {
   const gameState = useContext(GameState);
   const [lastBeat, setLastBeat] = useState();
+  const { data } = useGameEventsSubscription();
 
   useEffect(() => {
 
@@ -94,13 +132,39 @@ function GameSyncClient() {
   return null;
 }
 
-export function GameSimulator(props: { gameSession: SessionFragment, children: ReactNode }) {
+
+function useGameState(gameSession: SessionFragment): FullGameState | null {
+  const [dragNode, setDragNode] = useState<NodeFragment | null>();
+  const [dragPoint, setDragPoint] = useState<Vector3 | null>();
+  //const [selectedArmy, setSelectedArmy] = useState<number | null>();
+  const [dragging, setDragging] = useState(false);
+
+  const [setArmyTargetMutation] = useSetArmyTargetMutation();
+
+  function setArmyTarget(armyId: number, nodeId: number) {
+    setArmyTargetMutation({
+      variables: { armyId, nodeId },
+      optimisticResponse: {
+        update_armies: {
+          returning: [{
+            id: armyId,
+            planned_node_id: nodeId,
+          }],
+        }}
+    }).catch((err) => {
+      console.error(err);
+    });
+  }
 
   const [createGameClient] = useCreateGameClientMutation();
-
-  const {gameSession, children} = props;
-
   const [gameState, setGameState] = useState<GameStateI | null>(null);
+
+  useInterval(() => {
+    if (gameState !== null) {
+      const newGameState = performStep(gameState);
+      setGameState(newGameState);
+    }
+  }, 100);
 
   useEffect(() => {
     if(gameSession) {
@@ -127,31 +191,68 @@ export function GameSimulator(props: { gameSession: SessionFragment, children: R
     }
   }, [gameSession]);
 
-  useInterval(() => {
-    if (gameState !== null) {
-      const newGameState = performStep(gameState);
-      setGameState(newGameState);
-    }
-  }, 100);
+  if(!gameState) {
+    return null;
+  }
 
-  return (
-    <GameState.Provider value={gameState ? {
-      ...gameState,
-      setSelectedArmy: (selectedArmy) => {
-        gameState && setGameState({
-          ...gameState,
-          selectedArmy,
-        })
-      },
-      toggleRunning: () => {
-        gameState && setGameState({
-          ...gameState,
-          running: !gameState.running,
-        })
-      }
-    } : null}>
-      <GameSyncClient />
-      {children}
-    </GameState.Provider>
-  );
+  return {
+    ...gameState,
+    dragging,
+    gameSession,
+    dragNode: dragNode ?? null,
+    dragPoint: dragPoint ?? null,
+    setRunning: (running: boolean) => {
+      gameState && setGameState({
+        ...gameState,
+        running: running,
+      })
+    },
+    setSelectedArmy: (selectedArmy: number | null) => {
+      gameState && setGameState({
+        ...gameState,
+        selectedArmy,
+      })
+    },
+    setArmyTarget,
+    setDragPoint,
+    setDragging,
+    setDragNode,
+  };
+}
+
+interface GameSimulatorProps {
+  // gameSession: SessionFragment;
+  noSessionFallback: ReactNode;
+  children: ReactNode;
+}
+
+export function GameSimulator(props: GameSimulatorProps) {
+
+
+  // const [gameSession, setGameSession] = useState<SessionFragment>();
+  const gameSessionId = useMemo(() =>
+    localStorage.getItem("gameSessionId"), [])
+  // const gameSessionId = localStorage.getItem("gameSessionId");
+  const { data: gameSessions } = useGameSessionQuery({
+    variables: { gameSessionId },
+    skip: !gameSessionId,
+  });
+
+  const [gameSession] = gameSessions?.game_sessions || [];
+
+
+  const gameState = useGameState(gameSession);
+
+  if(gameState) {
+    return (
+      <GameState.Provider value={gameState ? gameState : null}>
+        <GameSyncClient />
+        {props.children}
+      </GameState.Provider>
+    );
+  } else {
+    return <>
+      {props.noSessionFallback}
+    </>
+  }
 }

@@ -29,6 +29,9 @@
     name: game_clients
 - table:
     schema: public
+    name: game_events
+- table:
+    schema: public
     name: game_sessions
   object_relationships:
   - name: session_config

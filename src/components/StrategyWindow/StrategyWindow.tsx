@@ -56,82 +56,94 @@ function Armies() {
   );
 }
 
-export const StrategyWindow = () => {
-  const [dragNode, setDragNode] = useState<NodeFragment | null>();
-  const [dragPoint, setDragPoint] = useState<Vector3 | null>();
-  const [selectedArmy, setSelectedArmy] = useState<number | null>();
-  const [dragging, setDragging] = useState(false);
-  const { data: gameSessions } = useGameSessionQuery();
-  const [setArmyTargetMutation] = useSetArmyTargetMutation();
+function Nodes() {
+  const gameState = useContext(GameState);
 
-
-  const [gameSession] = gameSessions?.game_sessions || [];
-
-
-  function setArmyTarget(armyId: number, nodeId: number) {
-    setArmyTargetMutation({
-      variables: { armyId, nodeId },
-      optimisticResponse: {
-        update_armies: {
-          returning: [{
-            id: armyId,
-            planned_node_id: nodeId,
-          }],
-        }}
-    }).catch((err) => {
-      console.error(err);
-    });
+  if(!gameState) {
+    return null;
   }
 
+  const {
+    selectedArmy,
+    setArmyTarget,
+    setDragging,
+    setDragNode,
+  } = gameState;
 
-
-
-  return (
-    <GameSimulator gameSession={gameSession}>
-      <TopGameBar />
-      <SceneWrapper
-        bridgeContexts={[GameState]}
-        orbitEnabled={!dragging}
-        pointerMoved={(point) => {
-          if(dragging) {
-            setDragPoint([point.x, point.y, point.z]);
+  return <>
+    {gameState.gameSession?.nodes.map((node) => (
+      <Cylinder
+        key={"node_"+node.id}
+        onRightPointerDown={() => {
+          // console.log("Click right")
+          if (typeof selectedArmy === "number") {
+            setArmyTarget(selectedArmy, node.id);
           }
         }}
-        // onClick={selectedArmy !== null ? ((event) => {
-        //   setSelectedArmy(null);
-        // }): undefined}
-        onPointerUp={() => {
-          setDragPoint(null);
-          setDragging(false);
-          setSelectedArmy(null);
-        }}>
-        <Edges edges={gameSession?.edges || []} />
-        {gameSession?.nodes.map((node) => (
-          <Cylinder
-            key={"node_"+node.id}
-            onRightPointerDown={() => {
-              // console.log("Click right")
-              if (typeof selectedArmy === "number") {
-                setArmyTarget(selectedArmy, node.id);
-              }
-            }}
-            onDragStart={(event: PointerEvent) => {
-              setDragging(true);
-              setDragNode(node)
-            }}
-            position={node.position}
-          />
-        ))}
-        <Armies />
+        onDragStart={(event: PointerEvent) => {
+          setDragging(true);
+          setDragNode(node)
+        }}
+        position={node.position}
+      />
+    ))}
+  </>;
+}
 
 
-        {dragNode && dragPoint && <SLine
-          start={dragNode.position}
-          end={dragPoint}
-          color="limegreen"
-          lineWidth={10}
-        />}
-      </SceneWrapper>
+function Scene() {
+   const gameState = useContext(GameState);
+
+   if(!gameState) {
+     return null;
+   }
+
+  const {
+    dragging,
+    setDragPoint,
+    setDragging,
+    setSelectedArmy,
+    gameSession,
+    dragNode,
+    dragPoint,
+  } = gameState;
+
+  return <SceneWrapper
+    bridgeContexts={[GameState]}
+    orbitEnabled={!dragging}
+    pointerMoved={(point) => {
+      if(dragging) {
+        setDragPoint([point.x, point.y, point.z]);
+      }
+    }}
+    // onClick={selectedArmy !== null ? ((event) => {
+    //   setSelectedArmy(null);
+    // }): undefined}
+    onPointerUp={() => {
+      setDragPoint(null);
+      setDragging(false);
+      setSelectedArmy(null);
+    }}>
+    <Edges edges={gameSession?.edges || []} />
+    <Nodes />
+    <Armies />
+
+
+    {dragNode && dragPoint && <SLine
+      start={dragNode.position}
+      end={dragPoint}
+      color="limegreen"
+      lineWidth={10}
+    />}
+  </SceneWrapper>;
+}
+
+export const StrategyWindow = () => {
+
+  return (
+    <GameSimulator noSessionFallback={<div>No Session</div>}>
+      <TopGameBar />
+      <Scene />
     </GameSimulator>
   );
 }

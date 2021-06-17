@@ -15,7 +15,7 @@ export function TopGameBar() {
   return (
     <AppBar position="static">
       <Toolbar>
-        <IconButton edge="start" color="inherit" aria-label="play" onClick={() => gameState?.toggleRunning()}>
+        <IconButton edge="start" color="inherit" aria-label="play" onClick={() => gameState?.setRunning(!gameState.running)}>
           {gameState && (gameState.running ? <PauseIcon /> : <PlayArrowIcon/>)}
         </IconButton>
 

@@ -1,6 +1,12 @@
-query GameSession {
-  game_sessions(where:{id:{_eq: 1}}) {
+query GameSession($gameSessionId: uuid) {
+  game_sessions(where:{uuid:{_eq: $gameSessionId}}) {
     ...Session
+  }
+}
+
+subscription GameEvents($game_session_id: Int) {
+  game_events(where: {game_session_id: {_eq: $game_session_id}}) {
+    ...GameEvent
   }
 }
 
@@ -24,6 +30,13 @@ mutation SetArmyTarget($armyId: Int, $nodeId: Int) {
       planned_node_id
     }
   }
+}
+
+fragment GameEvent on game_events {
+  id
+  game_session_id
+  source_client_id
+  type
 }
 
 fragment Session on game_sessions {
