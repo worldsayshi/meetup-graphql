@@ -10,6 +10,9 @@ import {
 } from "../../../generated/graphql";
 import useInterval from "../../common/useInterval";
 import {Vector3} from "../Scene/Types";
+import {
+  useParams
+} from "react-router-dom";
 
 
 interface GameStateI {
@@ -227,9 +230,7 @@ interface GameSimulatorProps {
 }
 
 export function GameSimulator(props: GameSimulatorProps) {
-
-  const gameSessionId = useMemo(() =>
-    localStorage.getItem("gameSessionId"), [])
+  let { gameSessionId } = useParams<{ gameSessionId?: string }>();
   const { data: gameSessions } = useGameSessionQuery({
     variables: { gameSessionId },
     skip: !gameSessionId,
