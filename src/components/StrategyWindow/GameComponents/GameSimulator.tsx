@@ -228,11 +228,8 @@ interface GameSimulatorProps {
 
 export function GameSimulator(props: GameSimulatorProps) {
 
-
-  // const [gameSession, setGameSession] = useState<SessionFragment>();
   const gameSessionId = useMemo(() =>
     localStorage.getItem("gameSessionId"), [])
-  // const gameSessionId = localStorage.getItem("gameSessionId");
   const { data: gameSessions } = useGameSessionQuery({
     variables: { gameSessionId },
     skip: !gameSessionId,
