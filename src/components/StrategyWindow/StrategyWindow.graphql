@@ -4,6 +4,12 @@ query GameSession($gameSessionId: uuid) {
   }
 }
 
+query GameLobby {
+  game_sessions {
+    ...Session
+  }
+}
+
 subscription GameEvents($game_session_id: Int) {
   game_events(where: {game_session_id: {_eq: $game_session_id}}) {
     ...GameEvent

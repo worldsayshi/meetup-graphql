@@ -3,7 +3,17 @@ import {ApolloClient, ApolloProvider, InMemoryCache} from "@apollo/client";
 import React from 'react';
 import {ThemeWrapper} from "../common/ThemeWrapper";
 import {BrowserRouter as Router, Route} from "react-router-dom";
-
+import {useGameLobbyQuery} from "../../generated/graphql";
+import {
+  Box,
+  Card,
+  CardContent,
+  CircularProgress,
+  Container,
+  List,
+  ListItem
+} from "@material-ui/core";
+import { Link } from 'react-router-dom';
 
 
 const client = new ApolloClient({
@@ -12,6 +22,26 @@ const client = new ApolloClient({
 });
 
 
+const LinkItem = ({ id, uuid }: { id: number, uuid: string }) => {
+  // why: https://material-ui.com/guides/composition/#caveat-with-inlining
+
+  const CustomLink = React.forwardRef((linkProps, ref) => (
+    <Link to={`/game/${uuid}`}>Game session {id}</Link>
+  ));
+
+  return <ListItem button component={CustomLink} />;
+}
+
+function SessionSelection() {
+  const { data } = useGameLobbyQuery();
+  return data ? <Container maxWidth="sm">
+    <Box my={4}>
+      <List component="nav" aria-label="main mailbox folders">
+        {data.game_sessions.map(LinkItem)}
+      </List>
+    </Box>
+  </Container>: <CircularProgress />;
+}
 
 export default () => {
 
@@ -28,7 +58,7 @@ export default () => {
               <StrategyWindow />
             </Route>
             <Route path="/">
-              <div>TODO: Game Session select/create view</div>
+              <SessionSelection />
             </Route>
           </div>
         </ThemeWrapper>

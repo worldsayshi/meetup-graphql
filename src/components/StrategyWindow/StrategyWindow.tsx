@@ -57,7 +57,7 @@ function Scene() {
 export const StrategyWindow = () => {
 
   return (
-    <GameSimulator noSessionFallback={<div>No Session</div>}>
+    <GameSimulator noSessionFallback={<div>No Session found</div>}>
       <TopGameBar />
       <Scene />
     </GameSimulator>
