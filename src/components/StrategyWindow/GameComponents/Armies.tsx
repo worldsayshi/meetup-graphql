@@ -1,5 +1,5 @@
 import React, {useContext} from "react";
-import {GameState} from "./GameSimulator";
+import {GameState} from "../GameSimulator/GameSimulator";
 import {Soldier} from "./Soldier";
 import {SLine} from "../Scene/QuadLine";
 

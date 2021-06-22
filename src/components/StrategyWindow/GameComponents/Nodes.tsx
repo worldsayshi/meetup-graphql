@@ -1,5 +1,5 @@
 import React, {useContext} from "react";
-import {GameState} from "./GameSimulator";
+import {GameState} from "../GameSimulator/GameSimulator";
 import Cylinder from "../Scene/Cylinder";
 import {PointerEvent} from "react-three-fiber/canvas";
 
