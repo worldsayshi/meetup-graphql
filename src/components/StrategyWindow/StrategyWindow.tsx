@@ -1,11 +1,12 @@
 import {SceneWrapper} from "./Scene/SceneView";
 import {SLine} from "./Scene/QuadLine";
 import React, {useContext} from "react";
-import {GameSimulator, GameState} from "./GameSimulator/GameSimulator";
+import {GameSimulator} from "./GameSimulator/GameSimulator";
 import {TopGameBar} from "./GameComponents/TopGameBar";
 import {Edges} from "./GameComponents/Edges";
 import {Nodes} from "./GameComponents/Nodes";
 import {Armies} from "./GameComponents/Armies";
+import {GameState} from "./GameSimulator/Context";
 
 
 function Scene() {
