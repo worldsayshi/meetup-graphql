@@ -1,10 +1,10 @@
-import React, {createContext, ReactNode, useContext, useEffect, useMemo, useState} from "react";
+import React, {createContext, ReactNode, useContext, useEffect, useState} from "react";
 import {
   ArmyFragment,
   NodeFragment,
   SessionFragment,
   useCreateGameClientMutation,
-  useGameEventsSubscription, useGameSessionLazyQuery,
+  useGameEventsSubscription,
   useGameSessionQuery,
   useSetArmyTargetMutation
 } from "../../../generated/graphql";

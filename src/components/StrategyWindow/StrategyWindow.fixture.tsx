@@ -29,7 +29,7 @@ const LinkItem = ({ id, uuid }: { id: number, uuid: string }) => {
     <Link to={`/game/${uuid}`}>Game session {id}</Link>
   ));
 
-  return <ListItem button component={CustomLink} />;
+  return <ListItem key={id} button component={CustomLink} />;
 }
 
 function SessionSelection() {
