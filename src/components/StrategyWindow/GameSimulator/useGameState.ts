@@ -1,39 +1,16 @@
 import {FullGameState, GameStateI} from "./Types";
-import {
-  NodeFragment,
-  SessionFragment,
-  useCreateGameClientMutation,
-  useSetArmyTargetMutation
-} from "../../../generated/graphql";
+import {SessionFragment, useCreateGameClientMutation} from "../../../generated/graphql";
 import {useEffect, useState} from "react";
-import {Vector3} from "../Scene/Types";
 import useInterval from "../../common/useInterval";
 import {initGameState} from "./initGameState";
 import {performStep} from "./performStep";
+import {useArmyControls} from "./useArmyControls";
+import {useDragControls} from "./useDragControls";
 
 export function useGameState(gameSession: SessionFragment): FullGameState | null {
-  const [dragNode, setDragNode] = useState<NodeFragment | null>();
-  const [dragPoint, setDragPoint] = useState<Vector3 | null>();
-  //const [selectedArmy, setSelectedArmy] = useState<number | null>();
-  const [dragging, setDragging] = useState(false);
 
-  const [setArmyTargetMutation] = useSetArmyTargetMutation();
-
-  function setArmyTarget(armyId: number, nodeId: number) {
-    setArmyTargetMutation({
-      variables: {armyId, nodeId},
-      optimisticResponse: {
-        update_armies: {
-          returning: [{
-            id: armyId,
-            planned_node_id: nodeId,
-          }],
-        }
-      }
-    }).catch((err) => {
-      console.error(err);
-    });
-  }
+  const dragControls = useDragControls();
+  const armyControls = useArmyControls();
 
   const [createGameClient] = useCreateGameClientMutation();
   const [gameState, setGameState] = useState<GameStateI | null>(null);
@@ -76,25 +53,14 @@ export function useGameState(gameSession: SessionFragment): FullGameState | null
 
   return {
     ...gameState,
-    dragging,
+    ...dragControls,
+    ...armyControls,
     gameSession,
-    dragNode: dragNode ?? null,
-    dragPoint: dragPoint ?? null,
     setRunning: (running: boolean) => {
       gameState && setGameState({
         ...gameState,
         running: running,
       })
     },
-    setSelectedArmy: (selectedArmy: number | null) => {
-      gameState && setGameState({
-        ...gameState,
-        selectedArmy,
-      })
-    },
-    setArmyTarget,
-    setDragPoint,
-    setDragging,
-    setDragNode,
   };
 }

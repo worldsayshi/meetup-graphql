@@ -7,7 +7,6 @@ export interface GameStateI {
   running: boolean;
   nodesLookup: NodesLookup;
   armies: ArmyLookup;
-  selectedArmy: number | null;
 
 
   heartBeatInterval: number;
@@ -22,6 +21,8 @@ export interface UserGameStateI {
   dragging: boolean;
   dragPoint: Vector3 | null;
   dragNode: NodeFragment | null;
+
+  selectedArmy: number | null;
 }
 
 export interface GameStateActions {

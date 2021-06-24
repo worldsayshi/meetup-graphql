@@ -26,7 +26,7 @@ export function initGameState(gameSession: SessionFragment): GameStateI {
       al[army.id] = army;
       return al;
     }, {}),
-    selectedArmy: null,
+    // selectedArmy: null,
 
     gameSession,
   }
