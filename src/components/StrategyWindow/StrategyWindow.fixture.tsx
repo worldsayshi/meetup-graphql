@@ -2,7 +2,7 @@ import {StrategyWindow} from './StrategyWindow';
 import {ApolloClient, ApolloProvider, InMemoryCache} from "@apollo/client";
 import React from 'react';
 import {ThemeWrapper} from "../common/ThemeWrapper";
-import {BrowserRouter as Router, Route} from "react-router-dom";
+import {BrowserRouter as Router, Route, Switch} from "react-router-dom";
 import {useGameLobbyQuery} from "../../generated/graphql";
 import {
   Box,
@@ -11,7 +11,7 @@ import {
   CircularProgress,
   Container,
   List,
-  ListItem
+  ListItem,
 } from "@material-ui/core";
 import { Link } from 'react-router-dom';
 
@@ -54,12 +54,14 @@ export default () => {
             width: "100%",
             height: "650px",
           }}>
-            <Route path="/game/:gameSessionId">
-              <StrategyWindow />
-            </Route>
-            <Route path="/">
-              <SessionSelection />
-            </Route>
+            <Switch>
+              <Route path="/game/:gameSessionId">
+                <StrategyWindow />
+              </Route>
+              <Route path="/">
+                <SessionSelection />
+              </Route>
+            </Switch>
           </div>
         </ThemeWrapper>
       </Router>
