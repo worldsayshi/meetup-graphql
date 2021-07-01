@@ -1,4 +1,9 @@
-import {GameStateI} from "./Types";
+import {ArmyLookup, GameStateI} from "./Types";
+import {ArmyFragment} from "../../../generated/graphql";
+
+function distance(pos1: [number, number], pos2: [number, number]) {
+  return Math.sqrt((pos1[0]-pos2[0])^2+(pos1[1]-pos2[1])^2);
+}
 
 export function performStep(gameState: GameStateI): GameStateI {
 
@@ -23,8 +28,47 @@ export function performStep(gameState: GameStateI): GameStateI {
      - remove the first element on army node_path
   * */
 
+  // 1. Progress armies
+  let movedArmies = Object.keys(gameState.armies).reduce((ma, key) => {
+    const army: ArmyFragment = gameState.armies[key];
+    const speed = army.army_type?.speed;
+    return {
+      ...ma,
+      [key]: {
+        ...army,
+        progress: army.progress + speed,
+      },
+    };
+  }, {} as ArmyLookup);
+
+  // 2. Move armies to next node if applicable
+  movedArmies = Object.keys(movedArmies).reduce((ma, key) => {
+    const army: ArmyFragment = movedArmies[key];
+    const current_node = army.current_node;
+    const planned_node = gameState.nodesLookup[army.planned_node_id];
+    const map_scale = gameState.gameSession.session_config.map_scale;
+    const edge_length = distance(current_node.position, planned_node.position);
+    if (army.progress * map_scale > edge_length) {
+      return {
+        ...ma,
+        [key]: {
+          ...army,
+          planned_node_id: army.planned_node_id,
+          current_node: planned_node,
+        },
+      };
+    }
+    return {
+      ...ma,
+      [key]: {
+        ...army,
+      },
+    };
+  }, {} as ArmyLookup);
+
   return {
     ...gameState,
+    armies: movedArmies,
     ticks: gameState.running ? gameState.ticks + 1 : gameState.ticks,
   };
 }

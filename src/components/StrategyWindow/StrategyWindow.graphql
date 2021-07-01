@@ -16,13 +16,27 @@ subscription GameEvents($game_session_id: Int) {
   }
 }
 
+mutation submitGameEvent($game_session_id: Int, $type: String, $source_client_id: Int, $trigger_tick: Int, $target_tick: Int, $payload: jsonb) {
+  insert_game_events(objects: [{
+    game_session_id: $game_session_id,
+    type: $type,
+    trigger_tick: $trigger_tick,
+    target_tick: $target_tick,
+    payload: $payload,
+    source_client_id: $source_client_id
+  }]) {
+    returning {
+      ...GameEvent
+    }
+  }
+}
+
 mutation createGameClient($game_session_id: Int) {
   insert_game_clients(objects:[{
     game_session_id: $game_session_id
   }]) {
     returning {
-      id
-      game_session_id
+      ...GameClient
     }
   }
 }
@@ -38,17 +52,28 @@ mutation SetArmyTarget($armyId: Int, $nodeId: Int) {
   }
 }
 
+fragment GameClient on game_clients {
+  id
+	game_session_id
+}
+
 fragment GameEvent on game_events {
   id
   game_session_id
   source_client_id
   type
+  target_tick
+  trigger_tick
+  payload
 }
 
 fragment Session on game_sessions {
   id
   uuid
 	elapsed_ticks
+  session_config {
+    ...SessionConfig
+  }
   nodes {
     ...Node
   }
@@ -60,13 +85,27 @@ fragment Session on game_sessions {
   }
 }
 
+fragment SessionConfig on session_configs {
+  id
+  map_scale
+}
+
 fragment Army on armies {
   id
+  progress
   planned_path
   planned_node_id
+  army_type {
+    ...ArmyType
+  }
   current_node {
     ...Node
   }
+}
+
+fragment ArmyType on army_types {
+  id
+  speed
 }
 
 fragment Node on nodes {

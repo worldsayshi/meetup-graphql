@@ -2,18 +2,9 @@ import {StrategyWindow} from './StrategyWindow';
 import {ApolloClient, ApolloProvider, InMemoryCache} from "@apollo/client";
 import React from 'react';
 import {ThemeWrapper} from "../common/ThemeWrapper";
-import {BrowserRouter as Router, Route, Switch} from "react-router-dom";
+import {BrowserRouter as Router, Link, Route, Switch} from "react-router-dom";
 import {useGameLobbyQuery} from "../../generated/graphql";
-import {
-  Box,
-  Card,
-  CardContent,
-  CircularProgress,
-  Container,
-  List,
-  ListItem,
-} from "@material-ui/core";
-import { Link } from 'react-router-dom';
+import {Box, CircularProgress, Container, List, ListItem,} from "@material-ui/core";
 
 
 const client = new ApolloClient({

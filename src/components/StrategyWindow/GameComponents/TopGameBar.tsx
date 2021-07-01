@@ -28,7 +28,7 @@ export function TopGameBar() {
         {gameState?.ticks}
         <TimerIcon />
 
-        <Tooltip title={"client id: "+gameState?.clientId}>
+        <Tooltip title={"client id: "+gameState?.gameClient?.id}>
           <InfoIcon />
         </Tooltip>
       </Toolbar>

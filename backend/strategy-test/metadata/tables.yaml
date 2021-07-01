@@ -2,6 +2,9 @@
     schema: public
     name: armies
   object_relationships:
+  - name: army_type
+    using:
+      foreign_key_constraint_on: army_type_id
   - name: current_node
     using:
       foreign_key_constraint_on: current_node_id
@@ -11,6 +14,9 @@
   - name: session
     using:
       foreign_key_constraint_on: session_id
+- table:
+    schema: public
+    name: army_types
 - table:
     schema: public
     name: edges

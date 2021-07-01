@@ -2,11 +2,11 @@ import React, {Suspense} from "react";
 import Sphere from "../Scene/Sphere";
 import {ObjectLoader} from "../Scene/ObjectLoader";
 // @ts-ignore
-import * as THREE from "three/build/three.module";
+//import * as THREE from "three/build/three.module";
 import {Vector3} from "../Scene/Types";
-import Cylinder2 from "../Scene/Cylinder2";
+//import Cylinder2 from "../Scene/Cylinder2";
 import {MouseEvent} from "react-three-fiber";
-import {Circle} from "@react-three/drei";
+//import {Circle} from "@react-three/drei";
 
 interface SoliderProps {
   position?: Vector3;

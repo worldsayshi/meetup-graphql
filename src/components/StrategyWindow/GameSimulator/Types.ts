@@ -1,8 +1,14 @@
-import {ArmyFragment, NodeFragment, SessionFragment} from "../../../generated/graphql";
+import {
+  ArmyFragment,
+  GameClientFragment,
+  NodeFragment,
+  SessionFragment
+} from "../../../generated/graphql";
 import {Vector3} from "../Scene/Types";
 
 export interface GameStateI {
-  clientId?: number;
+  //clientId?: number;
+  gameSession: SessionFragment;
   ticks: number;
   running: boolean;
   nodesLookup: NodesLookup;
@@ -11,8 +17,6 @@ export interface GameStateI {
 
   heartBeatInterval: number;
   commandOffset: number;
-
-  gameSession: SessionFragment;
 
 
 }
@@ -42,4 +46,6 @@ export type ArmyLookup = {
   [key: string]: ArmyFragment;
 }
 
-export type FullGameState = UserGameStateI & GameStateI & GameStateActions;
+export type FullGameState = UserGameStateI & GameStateI & GameStateActions & {
+  gameClient: GameClientFragment | null;
+};
