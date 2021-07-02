@@ -8,7 +8,7 @@ import {
 import {useState} from "react";
 
 export function useArmyControls(
-  gameSession: SessionFragment,
+  gameSession: SessionFragment | null,
   gameClient: GameClientFragment | null
 ) {
   // useGameEventsSubscription()
@@ -16,7 +16,7 @@ export function useArmyControls(
   //const [setArmyTargetMutation] = useSetArmyTargetMutation();
 
   function setArmyTarget(armyId: number, nodeId: number) {
-    if(gameClient) {
+    if(gameClient && gameSession) {
       submitGameEvent({
         variables: {
           type: "SET_ARMY_TARGET",
@@ -31,7 +31,7 @@ export function useArmyControls(
         console.error(err);
       });
     } else {
-      throw new Error("Tried to move an army without a client");
+      throw new Error("Tried to move an army but game state is not ready");
     }
 
 /*    setArmyTargetMutation({

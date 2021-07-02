@@ -5,10 +5,11 @@ import {ThemeWrapper} from "../common/ThemeWrapper";
 import {BrowserRouter as Router, Link, Route, Switch} from "react-router-dom";
 import {useGameLobbyQuery} from "../../generated/graphql";
 import {Box, CircularProgress, Container, List, ListItem,} from "@material-ui/core";
-
+import {link} from './link';
 
 const client = new ApolloClient({
-  uri: 'http://localhost:8080/v1/graphql',
+  link,
+//  uri: 'http://localhost:8080/v1/graphql',
   cache: new InMemoryCache()
 });
 

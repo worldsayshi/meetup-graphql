@@ -1,67 +1,39 @@
 import {FullGameState, GameStateI} from "./Types";
 import {
-  GameClientFragment,
-  SessionFragment,
-  useCreateGameClientMutation
+  GameEventFragment,
+  SessionFragment, useGameEventsSubscription,
 } from "../../../generated/graphql";
-import React, {useEffect, useMemo, useState} from "react";
+import {useEffect, useState} from "react";
 import useInterval from "../../common/useInterval";
 import {initGameState} from "./initGameState";
 import {performStep} from "./performStep";
 import {useArmyControls} from "./useArmyControls";
 import {useDragControls} from "./useDragControls";
+import {useGameClient} from "./useGameClient";
 
 
+function useGameEvents (gameSession: SessionFragment | null): Array<GameEventFragment> | null {
+  const { data/*, loading*/, error } = useGameEventsSubscription({
+    variables: {
+      game_session_id: gameSession?.id ?? null,
+    },
+    skip: gameSession === null,
+  });
 
-function useGameClient(gameSession: SessionFragment): GameClientFragment | null {
+  if (error) {
+    throw error;
+  }
+  console.log("game events error", error);
 
-  const [createGameClient] = useCreateGameClientMutation();
-
-  const [gameClient, setGameClient] = useState<GameClientFragment>();
-
-  useEffect(() => {
-    function getGameClientsFromLocalStorage(): { [sessionId: number]: GameClientFragment } {
-      let storedClients = localStorage.getItem("gameClients");
-      return  storedClients
-        ? JSON.parse(storedClients)
-        : {};
-    }
-    if (gameSession && gameSession.uuid) {
-      let clients = getGameClientsFromLocalStorage();
-      let client = clients[gameSession.id];
-      if (client) {
-        setGameClient(client);
-      } else {
-        createGameClient({
-          variables: {
-            game_session_id: gameSession.id
-          },
-        }).then(data => {
-            const [game_client] = data.data?.insert_game_clients?.returning || [];
-            if (game_client) {
-              setGameClient(game_client);
-              clients[gameSession.id] = game_client;
-              localStorage.setItem("gameClients", JSON.stringify(clients));
-            } else {
-              console.error("Client was not returned");
-            }
-          })
-          .catch(err => {
-            console.error(err);
-          });
-      }
-    }
-  }, [gameSession && gameSession.uuid]);
-
-  return gameClient ?? null;
+  return data?.game_events ?? null;
 }
 
-export function useGameState(gameSession: SessionFragment): FullGameState | null {
+export function useGameState(gameSession: SessionFragment | null): FullGameState | null {
 
   const dragControls = useDragControls();
   const gameClient = useGameClient(gameSession);
+  const gameEvents = useGameEvents(gameSession);
   const armyControls = useArmyControls(gameSession, gameClient);
-
 
   const [gameState, setGameState] = useState<GameStateI | null>(null);
 
@@ -84,7 +56,6 @@ export function useGameState(gameSession: SessionFragment): FullGameState | null
   // The shared entity should instead be the user input event!
 
   useEffect(() => {
-    console.log("gameSession", gameSession);
     if (gameSession && !gameState) {
       console.log("INITIALIZE GAME STATE")
       const gameState = initGameState(gameSession);
@@ -92,7 +63,14 @@ export function useGameState(gameSession: SessionFragment): FullGameState | null
     }
   }, [gameSession && gameSession.uuid]);
 
-  if (!gameState) {
+  if (!gameState || !gameClient || !gameEvents || !gameSession) {
+    console.log({
+      gameState: !!gameState,
+      gameClient: !!gameClient,
+      gameEvents: !!gameEvents,
+      gameSession: !!gameSession,
+    });
+    console.log("gameEvents", gameEvents);
     return null;
   }
 
@@ -101,6 +79,7 @@ export function useGameState(gameSession: SessionFragment): FullGameState | null
     ...dragControls,
     ...armyControls,
     gameClient,
+    gameEvents,
     gameSession,
     setRunning: (running: boolean) => {
       gameState && setGameState({

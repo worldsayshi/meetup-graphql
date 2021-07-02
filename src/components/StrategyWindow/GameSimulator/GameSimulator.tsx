@@ -39,7 +39,7 @@ export function GameSimulator(props: GameSimulatorProps) {
   const [gameSession] = gameSessions?.game_sessions || [];
 
 
-  const gameState = useGameState(gameSession);
+  const gameState = useGameState(gameSession ?? null);
 
   if(gameState) {
     return (

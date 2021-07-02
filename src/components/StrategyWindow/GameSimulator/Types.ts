@@ -1,6 +1,6 @@
 import {
   ArmyFragment,
-  GameClientFragment,
+  GameClientFragment, GameEventFragment,
   NodeFragment,
   SessionFragment
 } from "../../../generated/graphql";
@@ -47,5 +47,6 @@ export type ArmyLookup = {
 }
 
 export type FullGameState = UserGameStateI & GameStateI & GameStateActions & {
-  gameClient: GameClientFragment | null;
+  gameClient: GameClientFragment;
+  gameEvents: GameEventFragment[];
 };
