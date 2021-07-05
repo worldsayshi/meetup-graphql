@@ -6,20 +6,24 @@ import {
   useSubmitGameEventMutation
 } from "../../../generated/graphql";
 import {useState} from "react";
+import {GameStateI} from "./Types";
 
 export function useArmyControls(
   gameSession: SessionFragment | null,
-  gameClient: GameClientFragment | null
+  gameClient: GameClientFragment | null,
+  gameState: GameStateI | null
 ) {
   // useGameEventsSubscription()
   const [submitGameEvent] = useSubmitGameEventMutation();
   //const [setArmyTargetMutation] = useSetArmyTargetMutation();
 
   function setArmyTarget(armyId: number, nodeId: number) {
-    if(gameClient && gameSession) {
+    if(gameClient && gameSession && gameState) {
       submitGameEvent({
         variables: {
           type: "SET_ARMY_TARGET",
+          trigger_tick: gameState.ticks,
+          target_tick: gameState.ticks + gameState.commandOffset,
           game_session_id: gameSession.id,
           source_client_id: gameClient.id,
           payload: {

@@ -33,9 +33,9 @@ export function useGameState(gameSession: SessionFragment | null): FullGameState
   const dragControls = useDragControls();
   const gameClient = useGameClient(gameSession);
   const gameEvents = useGameEvents(gameSession);
-  const armyControls = useArmyControls(gameSession, gameClient);
-
   const [gameState, setGameState] = useState<GameStateI | null>(null);
+
+  const armyControls = useArmyControls(gameSession, gameClient, gameState);
 
   useInterval(() => {
     if (gameState !== null && gameState.running) {
