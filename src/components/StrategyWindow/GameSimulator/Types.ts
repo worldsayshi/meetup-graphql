@@ -1,6 +1,7 @@
 import {
   ArmyFragment,
-  GameClientFragment, GameEventFragment,
+  GameClientFragment,
+  GameEventFragment,
   NodeFragment,
   SessionFragment
 } from "../../../generated/graphql";
@@ -14,29 +15,8 @@ export interface GameStateI {
   nodesLookup: NodesLookup;
   armies: ArmyLookup;
 
-
   heartBeatInterval: number;
   commandOffset: number;
-
-
-}
-
-export interface UserGameStateI {
-  dragging: boolean;
-  dragPoint: Vector3 | null;
-  dragNode: NodeFragment | null;
-
-  selectedArmy: number | null;
-}
-
-export interface GameStateActions {
-  setSelectedArmy: (selectedArmy: number | null) => void;
-  setRunning: (running: boolean) => void;
-  setArmyTarget: (armyId: number, nodeId: number) => void;
-
-  setDragPoint: (dragPoint: Vector3 | null) => void;
-  setDragging: (dragging: boolean) => void;
-  setDragNode: (dragNode: NodeFragment | null) => void;
 }
 
 export type NodesLookup = {
@@ -44,6 +24,25 @@ export type NodesLookup = {
 };
 export type ArmyLookup = {
   [key: string]: ArmyFragment;
+}
+
+export interface UserGameStateI {
+  dragging: boolean;
+  dragPoint: Vector3 | null;
+  dragNode: NodeFragment | null;
+  selectedArmy: number | null;
+}
+
+// - Two kinds of actions:
+//   - calling something that calls backend
+//   - making changes to the state
+export interface GameStateActions {
+  setSelectedArmy: (selectedArmy: number | null) => void;
+  setRunning: (running: boolean) => void;
+  setArmyTarget: (armyId: number, nodeId: number) => void;
+  setDragPoint: (dragPoint: Vector3 | null) => void;
+  setDragging: (dragging: boolean) => void;
+  setDragNode: (dragNode: NodeFragment | null) => void;
 }
 
 export type FullGameState = UserGameStateI & GameStateI & GameStateActions & {

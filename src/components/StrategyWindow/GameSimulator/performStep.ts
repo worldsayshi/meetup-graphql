@@ -1,12 +1,16 @@
 import {ArmyLookup, GameStateI} from "./Types";
-import {ArmyFragment} from "../../../generated/graphql";
+import {ArmyFragment, GameEventFragment, SessionFragment} from "../../../generated/graphql";
 
 function distance(pos1: [number, number], pos2: [number, number]) {
   return Math.sqrt((pos1[0]-pos2[0])^2+(pos1[1]-pos2[1])^2);
 }
 
-export function performStep(gameState: GameStateI): GameStateI {
+export function performStep(gameState: GameStateI, gameEvents: Array<GameEventFragment> | null): GameStateI {
 
+  console.log("events:");
+  gameEvents?.forEach((ev) => {
+    console.log("ev", ev);
+  });
   /*
   TODO: Think about how heartbeat and army movement meshes
 

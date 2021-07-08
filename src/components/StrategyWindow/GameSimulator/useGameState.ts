@@ -1,8 +1,5 @@
 import {FullGameState, GameStateI} from "./Types";
-import {
-  GameEventFragment,
-  SessionFragment, useGameEventsSubscription,
-} from "../../../generated/graphql";
+import {SessionFragment,} from "../../../generated/graphql";
 import {useEffect, useState} from "react";
 import useInterval from "../../common/useInterval";
 import {initGameState} from "./initGameState";
@@ -10,24 +7,11 @@ import {performStep} from "./performStep";
 import {useArmyControls} from "./useArmyControls";
 import {useDragControls} from "./useDragControls";
 import {useGameClient} from "./useGameClient";
+import {useGameEvents} from "./useGameEvents";
 
-
-function useGameEvents (gameSession: SessionFragment | null): Array<GameEventFragment> | null {
-  const { data/*, loading*/, error } = useGameEventsSubscription({
-    variables: {
-      game_session_id: gameSession?.id ?? null,
-    },
-    skip: gameSession === null,
-  });
-
-  if (error) {
-    throw error;
-  }
-  console.log("game events error", error);
-
-  return data?.game_events ?? null;
-}
-
+/*
+* This is messy. Maybe use redux for the whole game state instead???
+* */
 export function useGameState(gameSession: SessionFragment | null): FullGameState | null {
 
   const dragControls = useDragControls();
@@ -39,7 +23,7 @@ export function useGameState(gameSession: SessionFragment | null): FullGameState
 
   useInterval(() => {
     if (gameState !== null && gameState.running) {
-      const newGameState = performStep(gameState);
+      const newGameState = performStep(gameState, gameEvents);
       setGameState(newGameState);
     }
   }, 100);
@@ -64,13 +48,6 @@ export function useGameState(gameSession: SessionFragment | null): FullGameState
   }, [gameSession && gameSession.uuid]);
 
   if (!gameState || !gameClient || !gameEvents || !gameSession) {
-    console.log({
-      gameState: !!gameState,
-      gameClient: !!gameClient,
-      gameEvents: !!gameEvents,
-      gameSession: !!gameSession,
-    });
-    console.log("gameEvents", gameEvents);
     return null;
   }
 
