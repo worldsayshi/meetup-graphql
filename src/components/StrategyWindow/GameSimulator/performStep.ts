@@ -5,6 +5,7 @@ function distance(pos1: [number, number], pos2: [number, number]) {
   return Math.sqrt((pos1[0]-pos2[0])^2+(pos1[1]-pos2[1])^2);
 }
 
+// Maybe "Tick" should be a redux event instead...
 export function performStep(gameState: GameStateI, gameEvents: Array<GameEventFragment> | null): GameStateI {
 
   console.log("events:");
