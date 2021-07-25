@@ -7,7 +7,7 @@ import BrightnessHighIcon from "@material-ui/icons/BrightnessHigh";
 import BrightnessLowIcon from "@material-ui/icons/BrightnessLow";
 import TimerIcon from '@material-ui/icons/Timer';
 import InfoIcon from '@material-ui/icons/Info';
-import {GameState} from "../GameSimulator/Context";
+import {GameState} from "../GameSimulator_old/Context";
 
 export function TopGameBar() {
   const gameState = useContext(GameState);

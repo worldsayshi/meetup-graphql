@@ -1,4 +1,7 @@
-import {createContext} from "react";
-import {FullGameState} from "./Types";
+import {GameState} from "./GameState";
+import {createGenericContext} from "../../common/createGenericContext";
 
-export const GameState = createContext<FullGameState | null>(null);
+//export const GameStateContext = createContext<GameState>(undefined!);
+
+
+export const [useGameStateContext, GameStateContext] = createGenericContext<GameState>();

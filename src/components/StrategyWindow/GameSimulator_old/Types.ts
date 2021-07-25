@@ -37,8 +37,8 @@ export interface UserGameStateI {
 //   - calling something that calls backend
 //   - making changes to the state
 export interface GameStateActions {
-  setSelectedArmy: (selectedArmy: number | null) => void;
   setRunning: (running: boolean) => void;
+  setSelectedArmy: (selectedArmy: number | null) => void;
   setArmyTarget: (armyId: number, nodeId: number) => void;
   setDragPoint: (dragPoint: Vector3 | null) => void;
   setDragging: (dragging: boolean) => void;

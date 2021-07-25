@@ -35,7 +35,7 @@ function SessionSelection() {
   </Container>: <CircularProgress />;
 }
 
-export default () => {
+const StrategyWindowFixture = () => {
 
 
   return (
@@ -60,3 +60,5 @@ export default () => {
     </ApolloProvider>
   );
 }
+
+export default StrategyWindowFixture;

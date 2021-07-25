@@ -1,6 +1,6 @@
 import React from 'react';
 // @ts-ignore
-import * as THREE from "three/build/three.module";
+//import * as THREE from "three/build/three.module";
 import {Line, CubicBezierLine, QuadraticBezierLine} from "@react-three/drei";
 import {Vector3} from "./Types";
 import {Color} from "react-three-fiber";
