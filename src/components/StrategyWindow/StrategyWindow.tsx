@@ -11,36 +11,43 @@ import {GameState} from "./GameSimulator_old/Context";
 
 
 function Scene() {
-   const gameState = useGameStateContext();
+   const gameStateContext = useGameStateContext();
 
-   if(!gameState) {
+   if(!gameStateContext) {
      return null;
    }
 
   const {
-    dragging,
-    setDragPoint,
-    setDragging,
-    setSelectedArmy,
-    dragNode,
-    dragPoint,
-  } = gameState;
+    gameState: {
+      dragging,
+      dragNode,
+      dragPoint,
+    },
+    dispatchLocalAction,
+  } = gameStateContext;
 
   return <SceneWrapper
     bridgeContexts={[GameState]}
     orbitEnabled={!dragging}
     pointerMoved={(point) => {
       if(dragging) {
-        setDragPoint([point.x, point.y, point.z]);
+        dispatchLocalAction({
+          type: "set_drag_point",
+          dragPoint: [point.x, point.y, point.z],
+        });
+        // setDragPoint([point.x, point.y, point.z]);
       }
     }}
     // onClick={selectedArmy !== null ? ((event) => {
     //   setSelectedArmy(null);
     // }): undefined}
     onPointerUp={() => {
-      setDragPoint(null);
-      setDragging(false);
-      setSelectedArmy(null);
+      dispatchLocalAction({ type: "set_drag_point", dragPoint: null });
+      //setDragPoint(null);
+      dispatchLocalAction({ type: "set_dragging", dragging: false });
+      dispatchLocalAction({ type: "select_army", selectedArmy: null });
+      //setDragging(false);
+      //setSelectedArmy(null);
     }}>
 
     <Edges />

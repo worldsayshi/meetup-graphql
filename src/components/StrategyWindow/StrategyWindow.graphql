@@ -33,6 +33,14 @@ mutation submitGameEvent($game_session_id: Int, $type: String, $source_client_id
   }
 }
 
+mutation submitGameEvents($gameEvents: [game_events_insert_input!]!) {
+  insert_game_events(objects: $gameEvents) {
+    returning {
+      ...GameEvent
+    }
+  }
+}
+
 mutation createGameClient($game_session_id: Int) {
   insert_game_clients(objects:[{
     game_session_id: $game_session_id
