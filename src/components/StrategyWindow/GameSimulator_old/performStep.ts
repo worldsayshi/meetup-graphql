@@ -1,17 +1,14 @@
 import {ArmyLookup, GameStateI} from "./Types";
 import {ArmyFragment, GameEventFragment, SessionFragment} from "../../../generated/graphql";
+import {LocalGameState} from "../GameSimulator/GameSimulator";
 
 function distance(pos1: [number, number], pos2: [number, number]) {
   return Math.sqrt((pos1[0]-pos2[0])^2+(pos1[1]-pos2[1])^2);
 }
 
 // Maybe "Tick" should be a redux event instead...
-export function performStep(gameState: GameStateI, gameEvents: Array<GameEventFragment> | null): GameStateI {
+export function performStep(gameState: LocalGameState): LocalGameState {
 
-  console.log("events:");
-  gameEvents?.forEach((ev) => {
-    console.log("ev", ev);
-  });
   /*
   TODO: Think about how heartbeat and army movement meshes
 
@@ -34,8 +31,8 @@ export function performStep(gameState: GameStateI, gameEvents: Array<GameEventFr
   * */
 
   // 1. Progress armies
-  let movedArmies = Object.keys(gameState.armies).reduce((ma, key) => {
-    const army: ArmyFragment = gameState.armies[key];
+  let movedArmies = Object.keys(gameState.armyLookup).reduce((ma, key) => {
+    const army: ArmyFragment = gameState.armyLookup[key];
     const speed = army.army_type?.speed;
     return {
       ...ma,
@@ -51,7 +48,7 @@ export function performStep(gameState: GameStateI, gameEvents: Array<GameEventFr
     const army: ArmyFragment = movedArmies[key];
     const current_node = army.current_node;
     const planned_node = gameState.nodesLookup[army.planned_node_id];
-    const map_scale = gameState.gameSession.session_config.map_scale;
+    const map_scale = gameState.mapScale;
     const edge_length = distance(current_node.position, planned_node.position);
     if (army.progress * map_scale > edge_length) {
       return {
@@ -73,7 +70,7 @@ export function performStep(gameState: GameStateI, gameEvents: Array<GameEventFr
 
   return {
     ...gameState,
-    armies: movedArmies,
-    ticks: gameState.running ? gameState.ticks + 1 : gameState.ticks,
+    armyLookup: movedArmies,
+    tick: gameState.running ? gameState.tick + 1 : gameState.tick,
   };
 }

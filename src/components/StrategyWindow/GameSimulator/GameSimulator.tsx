@@ -10,6 +10,7 @@ import {
 import useInterval from "../../common/useInterval";
 import {useParams} from "react-router-dom";
 import {useGameClient} from "../GameSimulator_old/useGameClient";
+import {performStep} from "../GameSimulator_old/performStep";
 
 interface GameSimulatorProps {
   noSessionFallback: ReactNode;
@@ -41,18 +42,24 @@ export type SharedGameAction = {
   nodeId: number
 }
 
-export type NodesLookup = {
-  [key: number]: NodeFragment;
-};
-export type ArmyLookup = {
-  [key: string]: ArmyFragment;
+export type Lookup<T> = {
+  [key: string]: T;
 }
-export type EdgeLookup = {
-  [key: string]: EdgeFragment;
-}
+export type NodesLookup = Lookup<NodeFragment>;
+export type ArmyLookup = Lookup<ArmyFragment>;
+export type EdgeLookup = Lookup<EdgeFragment>;
 
+
+function toLookup<T extends { id: string | number }>(ts: T[]) {
+  return ts.reduce((lookup: Lookup<T>, t) => {
+    lookup[t.id] = t;
+    return lookup;
+  }, {});
+}
 
 export interface LocalGameState {
+  mapScale: number;
+
   tick: number;
   running: boolean;
 
@@ -68,22 +75,14 @@ export interface LocalGameState {
 }
 
 
-function initializeLocalGameState(gameSession: SessionFragment): LocalGameState {
+function initializeLocalGameState(gameSession?: SessionFragment): LocalGameState {
 
-  const nodesLookup = gameSession.nodes.reduce((nl: NodesLookup, node) => {
-    nl[node.id] = node;
-    return nl;
-  }, {});
-  const armyLookup = gameSession.armies.reduce((al: ArmyLookup, army) => {
-    al[army.id] = army;
-    return al;
-  }, {});
-  const edgeLookup = gameSession.edges.reduce((el: EdgeLookup, edge) => {
-    el[edge.id] = edge;
-    return el;
-  }, {});
+  const nodesLookup = gameSession ? toLookup(gameSession.nodes) : {};
+  const armyLookup = gameSession ? toLookup(gameSession.armies) : {};
+  const edgeLookup = gameSession ? toLookup(gameSession.edges) : {};
   return {
-    tick: gameSession.elapsed_ticks,
+    mapScale: gameSession?.session_config.map_scale ?? 1,
+    tick: gameSession?.elapsed_ticks ?? 0,
     running: false,
 
     dragNode: null,
@@ -104,6 +103,8 @@ function localGameStateReducer(gameState: LocalGameState, action: LocalGameActio
   switch (action.type) {
     case "tick":
       console.warn("tick not implemented")
+
+      return performStep(gameState);
       break;
     case "select_army":
       return {...gameState, selectedArmy: action.selectedArmy};
@@ -149,7 +150,7 @@ export function GameSimulator(props: GameSimulatorProps) {
   const [gameSession] = gameSessions?.game_sessions || [];
   const gameClient = useGameClient(gameSession);
 
-  const initialLocalGameState = initializeLocalGameState(gameSession)
+  const initialLocalGameState = initializeLocalGameState(gameSession);
 
   const [localGameState, dispatchLocalAction] = useReducer(localGameStateReducer, initialLocalGameState);
 
