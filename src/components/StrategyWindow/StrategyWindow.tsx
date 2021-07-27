@@ -6,8 +6,7 @@ import {TopGameBar} from "./GameComponents/TopGameBar";
 import {Edges} from "./GameComponents/Edges";
 import {Nodes} from "./GameComponents/Nodes";
 import {Armies} from "./GameComponents/Armies";
-import {useGameStateContext} from "./GameSimulator/Context";
-import {GameState} from "./GameSimulator_old/Context";
+import {GameStateContext, useGameStateContext} from "./GameSimulator/Context";
 
 
 function Scene() {
@@ -26,8 +25,9 @@ function Scene() {
     dispatchLocalAction,
   } = gameStateContext;
 
+
   return <SceneWrapper
-    bridgeContexts={[GameState]}
+    bridgeContexts={[GameStateContext]}
     orbitEnabled={!dragging}
     pointerMoved={(point) => {
       if(dragging) {

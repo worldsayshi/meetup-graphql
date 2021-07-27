@@ -7,15 +7,19 @@ import BrightnessHighIcon from "@material-ui/icons/BrightnessHigh";
 import BrightnessLowIcon from "@material-ui/icons/BrightnessLow";
 import TimerIcon from '@material-ui/icons/Timer';
 import InfoIcon from '@material-ui/icons/Info';
-import {GameState} from "../GameSimulator_old/Context";
+import { useGameStateContext } from "../GameSimulator/Context";
 
 export function TopGameBar() {
-  const gameState = useContext(GameState);
+  const { gameState, dispatchLocalAction, dispatchSharedAction, gameClient } = useGameStateContext();
+  //const gameStateContext = useGameStateContext();
+  //const gameState = gameStateContext.gameState;
   const themeContext = useContext(ThemeContext);
   return (
     <AppBar position="static">
       <Toolbar>
-        <IconButton edge="start" color="inherit" aria-label="play" onClick={() => gameState?.setRunning(!gameState.running)}>
+        <IconButton edge="start" color="inherit" aria-label="play" onClick={() => {
+          dispatchSharedAction({ type: "set_running", running: !gameState.running });
+        }}>
           {gameState && (gameState.running ? <PauseIcon /> : <PlayArrowIcon/>)}
         </IconButton>
 
@@ -25,10 +29,10 @@ export function TopGameBar() {
           {themeContext.lightMode ? <BrightnessHighIcon /> : <BrightnessLowIcon />}
         </IconButton>}
 
-        {gameState?.ticks}
+        {gameState?.tick}
         <TimerIcon />
 
-        <Tooltip title={"client id: "+gameState?.gameClient?.id}>
+        <Tooltip title={"client id: "+gameClient.id}>
           <InfoIcon />
         </Tooltip>
       </Toolbar>

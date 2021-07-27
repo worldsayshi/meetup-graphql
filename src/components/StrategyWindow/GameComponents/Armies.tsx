@@ -1,20 +1,21 @@
 import React, {useContext} from "react";
-import {GameState} from "../GameSimulator_old/Context";
 import {Soldier} from "./Soldier";
 import {SLine} from "../Scene/QuadLine";
+import {useGameStateContext} from "../GameSimulator/Context";
 
 export function Armies() {
-  const gameState = useContext(GameState);
+  const { gameState, dispatchLocalAction, dispatchSharedAction } = useGameStateContext();
+
   return (
     <>
-      {gameState && Object.values(gameState?.armies).map(({id, current_node, planned_node_id}) => (
+      {gameState && Object.values(gameState?.armyLookup).map(({id, current_node, planned_node_id}) => (
         <React.Fragment key={"army_"+id}>
           <Soldier
             key={"army_"+id}
             selected={gameState.selectedArmy === id}
             position={current_node.position}
             onSelect={() => {
-              gameState.setSelectedArmy(id)
+              dispatchLocalAction({ type: "select_army", selectedArmy: id });
             }}
           />
           {gameState.nodesLookup && planned_node_id && <SLine

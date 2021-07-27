@@ -2,12 +2,12 @@ import React, {ReactNode, useCallback, useReducer, useState} from "react";
 import {GameStateContext} from "./Context";
 import {Vector3} from "../Scene/Types";
 import {
+  ArmyFragment, EdgeFragment,
   Game_Events_Insert_Input,
-  NodeFragment, useGameSessionQuery,
+  NodeFragment, SessionFragment, useGameSessionQuery,
   useSubmitGameEventsMutation
 } from "../../../generated/graphql";
 import useInterval from "../../common/useInterval";
-import {performStep} from "../GameSimulator_old/performStep";
 import {useParams} from "react-router-dom";
 import {useGameClient} from "../GameSimulator_old/useGameClient";
 
@@ -33,10 +33,24 @@ export type LocalGameAction = {
 };
 
 export type SharedGameAction = {
+  type: "set_running",
+  running: boolean,
+} | {
   type: "set_army_target",
   armyId: number,
   nodeId: number
 }
+
+export type NodesLookup = {
+  [key: number]: NodeFragment;
+};
+export type ArmyLookup = {
+  [key: string]: ArmyFragment;
+}
+export type EdgeLookup = {
+  [key: string]: EdgeFragment;
+}
+
 
 export interface LocalGameState {
   tick: number;
@@ -47,6 +61,43 @@ export interface LocalGameState {
   dragging: boolean;
 
   selectedArmy: number | null;
+
+  nodesLookup: NodesLookup;
+  armyLookup: ArmyLookup;
+  edgeLookup: EdgeLookup;
+}
+
+
+function initializeLocalGameState(gameSession: SessionFragment): LocalGameState {
+
+  const nodesLookup = gameSession.nodes.reduce((nl: NodesLookup, node) => {
+    nl[node.id] = node;
+    return nl;
+  }, {});
+  const armyLookup = gameSession.armies.reduce((al: ArmyLookup, army) => {
+    al[army.id] = army;
+    return al;
+  }, {});
+  const edgeLookup = gameSession.edges.reduce((el: EdgeLookup, edge) => {
+    el[edge.id] = edge;
+    return el;
+  }, {});
+  return {
+    tick: gameSession.elapsed_ticks,
+    running: false,
+
+    dragNode: null,
+    dragPoint: null,
+    dragging: false,
+
+    selectedArmy: null,
+
+    nodesLookup,
+    armyLookup,
+    edgeLookup,
+    // nodes: gameSession.nodes,
+    // armies: gameSession.armies,
+  };
 }
 
 function localGameStateReducer(gameState: LocalGameState, action: LocalGameAction): LocalGameState {
@@ -68,16 +119,7 @@ function localGameStateReducer(gameState: LocalGameState, action: LocalGameActio
 }
 
 
-const initialLocalGameState: LocalGameState = {
-  tick: 0,
-  running: false,
 
-  dragNode: null,
-  dragPoint: null,
-  dragging: false,
-
-  selectedArmy: null,
-};
 
 // Amount of ms between interleaved processing (currently also length of a tick)
 export const GAME_CLOCK_SPEED = 100;
@@ -93,8 +135,6 @@ export function GameSimulator(props: GameSimulatorProps) {
 
   const [submitGameEventsMutation] = useSubmitGameEventsMutation();
 
-  const [localGameState, dispatchLocalAction] = useReducer(localGameStateReducer, initialLocalGameState);
-
 
   const [outgoingActionQueue, setOutgoingActionQueue] = useState<SharedGameAction[]>([]);
   const [lastHeartbeatMs, setLastHeartbeatMs] = useState(-1);
@@ -105,9 +145,13 @@ export function GameSimulator(props: GameSimulatorProps) {
     variables: { gameSessionId },
     skip: !gameSessionId,
   });
-
+  // Maybe merge session and client queries into one?
   const [gameSession] = gameSessions?.game_sessions || [];
   const gameClient = useGameClient(gameSession);
+
+  const initialLocalGameState = initializeLocalGameState(gameSession)
+
+  const [localGameState, dispatchLocalAction] = useReducer(localGameStateReducer, initialLocalGameState);
 
   function dispatchSharedAction (action: SharedGameAction) {
     setOutgoingActionQueue([...outgoingActionQueue, action]);
@@ -145,9 +189,9 @@ export function GameSimulator(props: GameSimulatorProps) {
 
   }, GAME_CLOCK_SPEED);
 
-  if(localGameState) {
+  if(localGameState && gameSession && gameClient) {
     return (
-      <GameStateContext.Provider value={{gameState: localGameState, dispatchLocalAction, dispatchSharedAction }}>
+      <GameStateContext.Provider value={{ gameState: localGameState, dispatchLocalAction, dispatchSharedAction, gameClient }}>
         {props.children}
       </GameStateContext.Provider>
     );
