@@ -12,7 +12,6 @@ export function Edges() {
   }
 
   const edges = Object.values(gameState.edgeLookup) || []
-  console.log("edges", edges)
   return (
     <>
       {edges.map(({id, from, to}) => (

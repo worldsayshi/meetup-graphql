@@ -1,4 +1,4 @@
-import React, {ReactNode, useCallback, useReducer, useState} from "react";
+import React, {ReactNode, useCallback, useEffect, useReducer, useState} from "react";
 import {GameStateContext} from "./Context";
 import {Vector3} from "../Scene/Types";
 import {
@@ -18,6 +18,9 @@ interface GameSimulatorProps {
 }
 
 export type LocalGameAction = {
+  type: "initialize",
+  initialState: LocalGameState,
+} | {
   type: "tick"
 } | {
   type: "set_drag_point",
@@ -101,6 +104,8 @@ function initializeLocalGameState(gameSession?: SessionFragment): LocalGameState
 
 function localGameStateReducer(gameState: LocalGameState, action: LocalGameAction): LocalGameState {
   switch (action.type) {
+    case "initialize":
+      return action.initialState;
     case "tick":
       console.warn("tick not implemented")
 
@@ -131,6 +136,13 @@ export const HEARTBEAT_TICK_INTERVAL = 10;
 // How long after a heartbeat will the action be scheduled
 export const ACTION_OFFSET = HEARTBEAT_TICK_INTERVAL * 4;
 
+// -- Heartbeat watcher --
+// Maybe first trigger a handshake batch?
+// Listen to incoming batches
+// Process batches, trigger local actions/events
+// Remember last creation time for each batch
+// For each client, if the last received batch is older than tick - ACTION_OFFSET - 1:
+//    (trigger a connection lost event and) pause the game
 
 export function GameSimulator(props: GameSimulatorProps) {
 
@@ -150,9 +162,21 @@ export function GameSimulator(props: GameSimulatorProps) {
   const [gameSession] = gameSessions?.game_sessions || [];
   const gameClient = useGameClient(gameSession);
 
-  const initialLocalGameState = initializeLocalGameState(gameSession);
+  const [localGameState, dispatchLocalAction] = useReducer(
+    localGameStateReducer,
+    initializeLocalGameState(gameSession)
+  );
 
-  const [localGameState, dispatchLocalAction] = useReducer(localGameStateReducer, initialLocalGameState);
+  useEffect(() => {
+    if (gameSession) {
+      dispatchLocalAction({
+        type: "initialize",
+        initialState: initializeLocalGameState(gameSession),
+      });
+    }
+  }, [gameSession]);
+
+  // -----
 
   function dispatchSharedAction (action: SharedGameAction) {
     setOutgoingActionQueue([...outgoingActionQueue, action]);
@@ -164,13 +188,15 @@ export function GameSimulator(props: GameSimulatorProps) {
     const gameEvents: Game_Events_Insert_Input[] = outgoingActionQueue.map((payload) => ({
       game_session_id: Number(gameSessionId),
       source_client_id: gameClient?.id,
+      trigger_tick: localGameState.tick,
+      target_tick: localGameState.tick + ACTION_OFFSET,
       payload,
     }));
 
     submitGameEventsMutation({ variables: { gameEvents }}).then(() => {
       setOutgoingActionQueue([]);
-    }).catch(() => {
-
+    }).catch((err) => {
+      console.error("Failed to submit events: ", err);
     });
   }
 
@@ -180,8 +206,8 @@ export function GameSimulator(props: GameSimulatorProps) {
     }
 
     const currTime = Date.now();
-    if (currTime + HEARTBEAT_TIME_INTERVAL > lastHeartbeatMs
-      || localGameState.tick + HEARTBEAT_TICK_INTERVAL > lastHeartbeatTick) {
+    if ( false && (currTime + HEARTBEAT_TIME_INTERVAL > lastHeartbeatMs
+      || localGameState.tick + HEARTBEAT_TICK_INTERVAL > lastHeartbeatTick)) {
 
       heartbeat();
       setLastHeartbeatMs(currTime);
