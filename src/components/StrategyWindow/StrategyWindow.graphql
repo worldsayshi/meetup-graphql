@@ -1,5 +1,5 @@
-query GameSession($gameSessionId: uuid) {
-  game_sessions(where:{uuid:{_eq: $gameSessionId}}) {
+query GameSession($gameSessionGuid: uuid) {
+  game_sessions(where:{uuid:{_eq: $gameSessionGuid}}) {
     ...Session
   }
 }

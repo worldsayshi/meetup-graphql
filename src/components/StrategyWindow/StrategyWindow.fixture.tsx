@@ -1,17 +1,11 @@
 import {StrategyWindow} from './StrategyWindow';
-import {ApolloClient, ApolloProvider, InMemoryCache} from "@apollo/client";
+import {ApolloProvider} from "@apollo/client";
 import React from 'react';
 import {ThemeWrapper} from "../common/ThemeWrapper";
 import {BrowserRouter as Router, Link, Route, Switch} from "react-router-dom";
 import {useGameLobbyQuery} from "../../generated/graphql";
 import {Box, CircularProgress, Container, List, ListItem,} from "@material-ui/core";
-import {link} from './link';
-
-const client = new ApolloClient({
-  link,
-//  uri: 'http://localhost:8080/v1/graphql',
-  cache: new InMemoryCache()
-});
+import {client} from "./client";
 
 
 const LinkItem = ({ id, uuid }: { id: number, uuid: string }) => {
@@ -47,7 +41,7 @@ const StrategyWindowFixture = () => {
             height: "650px",
           }}>
             <Switch>
-              <Route path="/game/:gameSessionId">
+              <Route path="/game/:gameSessionGuid">
                 <StrategyWindow />
               </Route>
               <Route path="/">

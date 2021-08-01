@@ -1,4 +1,4 @@
-import React, {ReactNode, useCallback, useEffect, useReducer, useState} from "react";
+import React, {ReactNode, useCallback, useEffect, useMemo, useReducer, useState} from "react";
 import {GameStateContext} from "./Context";
 import {Vector3} from "../Scene/Types";
 import {
@@ -11,6 +11,7 @@ import useInterval from "../../common/useInterval";
 import {useParams} from "react-router-dom";
 import {useGameClient} from "../GameSimulator_old/useGameClient";
 import {performStep} from "../GameSimulator_old/performStep";
+import EventWorker from './EventWorker.worker';
 
 interface GameSimulatorProps {
   noSessionFallback: ReactNode;
@@ -145,7 +146,7 @@ export const ACTION_OFFSET = HEARTBEAT_TICK_INTERVAL * 4;
 //    (trigger a connection lost event and) pause the game
 
 export function GameSimulator(props: GameSimulatorProps) {
-
+  const eventWorker: Worker = useMemo<Worker>(() => new EventWorker(), []);
   const [submitGameEventsMutation] = useSubmitGameEventsMutation();
 
 
@@ -153,10 +154,10 @@ export function GameSimulator(props: GameSimulatorProps) {
   const [lastHeartbeatMs, setLastHeartbeatMs] = useState(-1);
   const [lastHeartbeatTick, setLastHeartbeatTick] = useState(-1);
 
-  let { gameSessionId } = useParams<{ gameSessionId?: string }>();
+  let { gameSessionGuid } = useParams<{ gameSessionGuid?: string }>();
   const { data: gameSessions } = useGameSessionQuery({
-    variables: { gameSessionId },
-    skip: !gameSessionId,
+    variables: { gameSessionGuid },
+    skip: !gameSessionGuid,
   });
   // Maybe merge session and client queries into one?
   const [gameSession] = gameSessions?.game_sessions || [];
@@ -178,27 +179,46 @@ export function GameSimulator(props: GameSimulatorProps) {
 
   // -----
 
+
   function dispatchSharedAction (action: SharedGameAction) {
     setOutgoingActionQueue([...outgoingActionQueue, action]);
   }
 
   // Push a shared action batch to the server
   function heartbeat() {
+    console.log("gameSessionId", gameSession.id);
+    // Let the event handling
+    const gameEvents: Game_Events_Insert_Input[] = [
+      {
+        game_session_id: gameSession.id,
+        source_client_id: gameClient?.id,
+        type:"heartbeat",
+        trigger_tick: localGameState.tick,
+        target_tick: localGameState.tick + ACTION_OFFSET,
+      },
+      ...outgoingActionQueue.map((payload) => ({
+        game_session_id: gameSession.id,
+        source_client_id: gameClient?.id,
+        trigger_tick: localGameState.tick,
+        target_tick: localGameState.tick + ACTION_OFFSET,
+        payload,
+      })),
+    ];
 
-    const gameEvents: Game_Events_Insert_Input[] = outgoingActionQueue.map((payload) => ({
-      game_session_id: Number(gameSessionId),
-      source_client_id: gameClient?.id,
-      trigger_tick: localGameState.tick,
-      target_tick: localGameState.tick + ACTION_OFFSET,
-      payload,
-    }));
+    eventWorker.postMessage(JSON.stringify(gameEvents));
+    setOutgoingActionQueue([]);
+    // Let the event mutation remove the previous hearbeats and be it's own cleaner.
+    /*submitGameEventsMutation({ variables: { gameEvents }}).then(() => {
 
-    submitGameEventsMutation({ variables: { gameEvents }}).then(() => {
-      setOutgoingActionQueue([]);
     }).catch((err) => {
       console.error("Failed to submit events: ", err);
-    });
+    });*/
   }
+
+  // This makes the GUI very sluggish. Maybe use web workers?? Hurray, new hammer!
+  // https://www.smashingmagazine.com/2020/10/tasks-react-app-web-workers/
+
+  // Maybe even this? https://github.com/dai-shi/react-hooks-worker
 
   useInterval(() => {
     if (localGameState !== null && localGameState.running) {
@@ -206,8 +226,8 @@ export function GameSimulator(props: GameSimulatorProps) {
     }
 
     const currTime = Date.now();
-    if ( false && (currTime + HEARTBEAT_TIME_INTERVAL > lastHeartbeatMs
-      || localGameState.tick + HEARTBEAT_TICK_INTERVAL > lastHeartbeatTick)) {
+    if (currTime + HEARTBEAT_TIME_INTERVAL > lastHeartbeatMs
+      || localGameState.tick + HEARTBEAT_TICK_INTERVAL > lastHeartbeatTick) {
 
       heartbeat();
       setLastHeartbeatMs(currTime);

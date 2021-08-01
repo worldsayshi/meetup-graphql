@@ -24,8 +24,10 @@ export const link = split(
   ({ query }) => {
     const definition = getMainDefinition(query);
     return (
-      definition.kind === 'OperationDefinition' &&
-      definition.operation === 'subscription'
+
+      true
+      //definition.kind === 'OperationDefinition' &&
+      //definition.operation === 'subscription'
     );
   },
   wsLink,
