@@ -4,11 +4,19 @@ import {gql} from "@apollo/client/core";
 import {client} from '../client';
 import {GameEventFragment} from "../../../generated/graphql";
 
+// Lots of mutations made the GUI very sluggish. Solved with web workers!! Hurray, new hammer!
+// https://www.smashingmagazine.com/2020/10/tasks-react-app-web-workers/
+
+// Maybe try this at some point?
+// https://github.com/dai-shi/react-hooks-worker
+
 declare const self: Worker;
 export default {} as typeof Worker & { new (): Worker };
 
 console.log('[EventWorker] Running.');
 
+// Couldn't import document from the generated file. Got parse errors. Ouch.
+// Let the event mutation remove the previous hearbeats and be it's own cleaner.
 const mutation = gql`
 mutation submitGameEvents(
   $gameEvents: [game_events_insert_input!]!,

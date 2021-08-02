@@ -1,6 +1,7 @@
 import {createGenericContext} from "../../common/createGenericContext";
-import {LocalGameAction, LocalGameState, SharedGameAction} from "./GameSimulator";
+import {SharedGameAction} from "./GameSimulator";
 import {GameClientFragment} from "../../../generated/graphql";
+import {LocalGameAction, LocalGameState} from "./LocalGameState";
 
 export interface GameContext {
   gameClient: GameClientFragment;
