@@ -9,12 +9,26 @@ export default {} as typeof Worker & { new (): Worker };
 console.log('[EventWorker] Running.');
 
 const mutation = gql`
-mutation submitGameEvents($gameEvents: [game_events_insert_input!]!) {
+mutation submitGameEvents(
+  $gameEvents: [game_events_insert_input!]!,
+  $gameSessionId: Int,
+  $sourceClientId: Int,
+) {
+  delete_game_events(
+    where: {
+      type: {_eq: "heartbeat"}
+      game_session_id: {_eq: $gameSessionId},
+      source_client_id: {_eq: $sourceClientId}
+    }
+  ) {
+    affected_rows
+  }
   insert_game_events(objects: $gameEvents) {
     returning {
       ...GameEvent
     }
   }
+
 }
 
 fragment GameEvent on game_events {
