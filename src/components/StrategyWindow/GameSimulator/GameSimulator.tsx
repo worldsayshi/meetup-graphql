@@ -2,10 +2,12 @@ import React, {ReactNode, useCallback, useEffect, useMemo, useReducer, useState}
 import {GameStateContext} from "./Context";
 import {Vector3} from "../Scene/Types";
 import {
-  ArmyFragment, EdgeFragment,
+  ArmyFragment,
+  EdgeFragment,
   Game_Events_Insert_Input,
-  NodeFragment, SessionFragment, useGameSessionQuery,
-  useSubmitGameEventsMutation
+  NodeFragment,
+  SessionFragment,
+  useGameSessionQuery
 } from "../../../generated/graphql";
 import useInterval from "../../common/useInterval";
 import {useParams} from "react-router-dom";
@@ -147,8 +149,6 @@ export const ACTION_OFFSET = HEARTBEAT_TICK_INTERVAL * 4;
 
 export function GameSimulator(props: GameSimulatorProps) {
   const eventWorker: Worker = useMemo<Worker>(() => new EventWorker(), []);
-  const [submitGameEventsMutation] = useSubmitGameEventsMutation();
-
 
   const [outgoingActionQueue, setOutgoingActionQueue] = useState<SharedGameAction[]>([]);
   const [lastHeartbeatMs, setLastHeartbeatMs] = useState(-1);
@@ -186,7 +186,6 @@ export function GameSimulator(props: GameSimulatorProps) {
 
   // Push a shared action batch to the server
   function heartbeat() {
-    console.log("gameSessionId", gameSession.id);
     // Let the event handling
     const gameEvents: Game_Events_Insert_Input[] = [
       {
