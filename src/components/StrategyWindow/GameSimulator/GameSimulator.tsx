@@ -196,7 +196,8 @@ export function GameSimulator(props: GameSimulatorProps) {
         trigger_tick: localGameState.tick,
         target_tick: localGameState.tick + ACTION_OFFSET,
       },
-      ...outgoingActionQueue.map((payload) => ({
+      ...outgoingActionQueue.map(({type, ...payload}) => ({
+        type,
         game_session_id: gameSession.id,
         source_client_id: gameClient?.id,
         trigger_tick: localGameState.tick,

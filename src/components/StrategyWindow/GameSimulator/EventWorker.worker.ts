@@ -2,6 +2,7 @@
 
 import {gql} from "@apollo/client/core";
 import {client} from '../client';
+import {GameEventFragment} from "../../../generated/graphql";
 
 declare const self: Worker;
 export default {} as typeof Worker & { new (): Worker };
@@ -43,8 +44,13 @@ fragment GameEvent on game_events {
 `;
 
 self.addEventListener('message', (event: MessageEvent): void => {
-  console.log('[EventWorker] Incoming message from main thread:', event.data);
-  const gameEvents = JSON.parse(event.data);
+  //console.log('[EventWorker] Incoming message from main thread:', event.data);
+  const gameEvents: GameEventFragment[] = JSON.parse(event.data);
+  gameEvents.forEach((ge) => {
+    if(ge.type !== "heartbeat") {
+      console.log('[EventWorker] Incoming event from main thread:', event.data);
+    }
+  });
   client.mutate({
     mutation,
     variables: { gameEvents },
