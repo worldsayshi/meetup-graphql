@@ -6,6 +6,7 @@ import {
 } from "../../../generated/graphql";
 import {Vector3} from "../Scene/Types";
 import {performStep} from "./performStep";
+import {SharedGameAction} from "./GameSimulator";
 
 
 export type Lookup<T> = {
@@ -85,7 +86,7 @@ export function initializeLocalGameState(gameSession?: SessionFragment): LocalGa
   };
 }
 
-export function localGameStateReducer(gameState: LocalGameState, action: LocalGameAction): LocalGameState {
+export function localGameStateReducer(gameState: LocalGameState, action: LocalGameAction | SharedGameAction): LocalGameState {
   switch (action.type) {
     case "initialize":
       return action.initialState;
@@ -93,10 +94,18 @@ export function localGameStateReducer(gameState: LocalGameState, action: LocalGa
       console.warn("tick not implemented")
 
       return performStep(gameState);
-      break;
     case "select_army":
       return {...gameState, selectedArmy: action.selectedArmy};
-      break;
+    case "set_running":
+      return {...gameState, running: action.running};
+    case "set_army_target":
+      return {...gameState, armyLookup: {
+        ...gameState.armyLookup,
+        [action.armyId]: {
+          ...gameState.armyLookup[action.armyId],
+          planned_node_id: action.nodeId,
+        }
+      }};
     case "set_drag_point":
       return {...gameState, dragPoint: action.dragPoint};
     case "set_drag_node":

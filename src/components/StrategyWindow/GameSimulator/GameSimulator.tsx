@@ -1,7 +1,7 @@
 import React, {ReactNode, useEffect, useMemo, useReducer, useState} from "react";
 import {GameStateContext} from "./Context";
 import {
-  Game_Events_Insert_Input,
+  Game_Events_Insert_Input, useGameEventsSubscription,
   useGameSessionQuery
 } from "../../../generated/graphql";
 import useInterval from "../../common/useInterval";
@@ -73,7 +73,8 @@ export function GameSimulator(props: GameSimulatorProps) {
   }, [gameSession]);
 
 
-  // -----
+  /// --- Send events
+
   const [outgoingActionQueue, setOutgoingActionQueue] = useState<SharedGameAction[]>([]);
   function dispatchSharedAction (action: SharedGameAction) {
     setOutgoingActionQueue([...outgoingActionQueue, action]);
@@ -105,8 +106,6 @@ export function GameSimulator(props: GameSimulatorProps) {
     setOutgoingActionQueue([]);
   }
 
-
-
   useInterval(() => {
     if (localGameState !== null && localGameState.running) {
       dispatchLocalAction({ type: "tick" });
@@ -123,6 +122,26 @@ export function GameSimulator(props: GameSimulatorProps) {
 
   }, GAME_CLOCK_SPEED);
 
+
+
+  /// --- Read events
+  const [lastHandledEvent, setLastHandledEvent] = useState<number>();
+  const { data } = useGameEventsSubscription();
+
+  useEffect(() => {
+    if(data) {
+      data.game_events.forEach((ev) => {
+        dispatchLocalAction({
+          ...ev,
+          ...ev.payload,
+        });
+      })
+      setLastHandledEvent(data.game_events[data.game_events.length-1].id)
+    }
+  }, [data && data.game_events.length > 0 && data.game_events[data.game_events.length-1].id !== lastHandledEvent])
+
+
+  /// --- Render
   if(localGameState && gameSession && gameClient) {
     return (
       <GameStateContext.Provider value={{ gameState: localGameState, dispatchLocalAction, dispatchSharedAction, gameClient }}>
