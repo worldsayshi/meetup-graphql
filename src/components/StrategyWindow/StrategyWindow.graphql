@@ -12,7 +12,7 @@ query GameLobby {
 
 subscription GameEvents($game_session_id: Int, $after_game_event_id: Int) {
   game_events(where: {
-    id: {_gte: $after_game_event_id},
+    id: {_gt: $after_game_event_id},
     game_session_id: {_eq: $game_session_id}}) {
     ...GameEvent
   }

@@ -126,15 +126,24 @@ export function GameSimulator(props: GameSimulatorProps) {
 
   /// --- Read events
   const [lastHandledEvent, setLastHandledEvent] = useState<number>();
-  const { data } = useGameEventsSubscription();
+  const { data } = useGameEventsSubscription({ variables: {
+    after_game_event_id: lastHandledEvent,
+    game_session_id: gameSession.id,
+  }});
 
   useEffect(() => {
-    if(data) {
-      data.game_events.forEach((ev) => {
-        dispatchLocalAction({
-          ...ev,
-          ...ev.payload,
-        });
+    if(data && data.game_events.length > 0) {
+      const regular_events = data.game_events.filter(ev => ev.type !== "heartbeat");
+      if(regular_events.length > 0) {
+        console.log("events to handle:", regular_events.map(({id}) => id));
+      }
+      regular_events.forEach((ev) => {
+        if(ev.type !== "heartbeat") {
+          dispatchLocalAction({
+            ...ev,
+            ...ev.payload,
+          });
+        }
       })
       setLastHandledEvent(data.game_events[data.game_events.length-1].id)
     }
