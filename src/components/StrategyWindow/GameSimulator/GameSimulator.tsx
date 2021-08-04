@@ -126,10 +126,13 @@ export function GameSimulator(props: GameSimulatorProps) {
 
   /// --- Read events
   const [lastHandledEvent, setLastHandledEvent] = useState<number>();
-  const { data } = useGameEventsSubscription({ variables: {
-    after_game_event_id: lastHandledEvent,
-    game_session_id: gameSession.id,
-  }});
+  const { data } = useGameEventsSubscription({
+    variables: {
+      after_game_event_id: lastHandledEvent,
+      game_session_id: gameSession?.id,
+    },
+    skip: !gameSession
+  });
 
   useEffect(() => {
     if(data && data.game_events.length > 0) {
