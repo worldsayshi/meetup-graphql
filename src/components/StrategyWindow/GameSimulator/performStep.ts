@@ -54,6 +54,7 @@ export function performStep(gameState: LocalGameState): LocalGameState {
         ...ma,
         [key]: {
           ...army,
+          progress: army.progress - map_scale * edge_length,
           planned_node_id: army.planned_node_id,
           current_node: planned_node,
         },
