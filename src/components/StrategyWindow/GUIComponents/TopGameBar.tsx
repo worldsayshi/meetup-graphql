@@ -1,4 +1,4 @@
-import React, {useContext} from "react";
+import React, {useContext, useState} from "react";
 import {ThemeContext} from "../../common/ThemeWrapper";
 import {AppBar, IconButton, Toolbar, Tooltip} from "@material-ui/core";
 import PauseIcon from "@material-ui/icons/Pause";
@@ -7,12 +7,13 @@ import BrightnessHighIcon from "@material-ui/icons/BrightnessHigh";
 import BrightnessLowIcon from "@material-ui/icons/BrightnessLow";
 import TimerIcon from '@material-ui/icons/Timer';
 import InfoIcon from '@material-ui/icons/Info';
-import { useGameStateContext } from "../GameSimulator/Context";
+import {useGameStateContext} from "../GameSimulator/Context";
+import AssessmentIcon from '@material-ui/icons/Assessment';
+import {AnalyzeDialogue} from "./AnalyzeWindow";
 
 export function TopGameBar() {
-  const { gameState, dispatchLocalAction, dispatchSharedAction, gameClient } = useGameStateContext();
-  //const gameStateContext = useGameStateContext();
-  //const gameState = gameStateContext.gameState;
+  const { gameState, dispatchSharedAction, gameClient } = useGameStateContext();
+  const [showDebuggingPopup, setShowDebuggingPopup] = useState<boolean>(false);
   const themeContext = useContext(ThemeContext);
   return (
     <AppBar position="static">
@@ -22,6 +23,15 @@ export function TopGameBar() {
         }}>
           {gameState && (gameState.running ? <PauseIcon /> : <PlayArrowIcon/>)}
         </IconButton>
+        <IconButton onClick={() => {
+          setShowDebuggingPopup(true);
+        }}>
+          <AssessmentIcon />
+        </IconButton>
+        <AnalyzeDialogue
+          open={showDebuggingPopup}
+          onClose={() => setShowDebuggingPopup(false)}
+        />
 
         {themeContext && <IconButton color="inherit" onClick={
           () => themeContext.setLightMode(!themeContext.lightMode)

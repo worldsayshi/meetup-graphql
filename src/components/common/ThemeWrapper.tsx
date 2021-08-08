@@ -1,9 +1,8 @@
-import {createMuiTheme, MuiThemeProvider} from "@material-ui/core";
 import React, {createContext, ReactNode, useEffect, useMemo} from "react";
 import CssBaseline from "@material-ui/core/CssBaseline";
+import { createTheme, ThemeProvider } from '@material-ui/core/styles';
 
-
-const themeLight = createMuiTheme({
+const themeLight = createTheme({
   palette: {
     background: {
       default: "#e4f0e2"
@@ -11,8 +10,9 @@ const themeLight = createMuiTheme({
   }
 });
 
-const themeDark = createMuiTheme({
+const themeDark = createTheme({
   palette: {
+    type: 'dark',
     background: {
       default: "#222222"
     },
@@ -38,7 +38,7 @@ export function ThemeWrapper(props: { children: ReactNode }) {
   }, [lightMode]);
 
   return (
-    <MuiThemeProvider theme={lightMode ? themeLight : themeDark}>
+    <ThemeProvider theme={lightMode ? themeLight : themeDark}>
       <CssBaseline />
       {/*<Button onClick={() => setLightMode(prev => !prev)}>Toggle Theme</Button>*/}
       <ThemeContext.Provider value={{
@@ -46,6 +46,6 @@ export function ThemeWrapper(props: { children: ReactNode }) {
       }}>
         {props.children}
       </ThemeContext.Provider>
-    </MuiThemeProvider>
+    </ThemeProvider>
   );
 }

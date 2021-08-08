@@ -2,7 +2,7 @@ import {SceneWrapper} from "./Scene/SceneView";
 import {SLine} from "./Scene/QuadLine";
 import React from "react";
 import {GameSimulator} from "./GameSimulator/GameSimulator";
-import {TopGameBar} from "./GameComponents/TopGameBar";
+import {TopGameBar} from "./GUIComponents/TopGameBar";
 import {Edges} from "./GameComponents/Edges";
 import {Nodes} from "./GameComponents/Nodes";
 import {Armies} from "./GameComponents/Armies";
