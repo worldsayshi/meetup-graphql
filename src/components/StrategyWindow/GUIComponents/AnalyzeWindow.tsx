@@ -8,10 +8,15 @@ import {
   DialogContent,
   DialogContentText,
   DialogTitle,
+  Paper,
+  PaperProps,
   Tab,
   Tabs,
   Typography
 } from "@material-ui/core";
+import {useGameStateContext} from "../GameSimulator/Context";
+import DataTable from 'react-data-table-component';
+import Draggable from 'react-draggable';
 
 function TabPanel(props: {
   children: ReactNode,
@@ -45,22 +50,31 @@ function a11yProps(index: number) {
 }
 
 function AnalyzeDialogueContent() {
-  const [value, setValue] = React.useState('1');
+  const { gameState } = useGameStateContext();
+  const [value, setValue] = React.useState(0);
 
   // @ts-ignore
   const handleChange = (event, newValue) => {
     setValue(newValue);
   };
+  let armies = Object.values(gameState.armyLookup);
   return <>
     <AppBar position="static">
       <Tabs value={value} onChange={handleChange} aria-label="simple tabs example">
-        <Tab label="Item One" {...a11yProps(0)} />
+        <Tab label="Armies" {...a11yProps(0)} />
         <Tab label="Item Two" {...a11yProps(1)} />
         <Tab label="Item Three" {...a11yProps(2)} />
       </Tabs>
     </AppBar>
     <TabPanel value={value} index={0}>
-      Item One
+      <DataTable columns={[
+        { name: "Id", selector: "id", sortable: true },
+        { name: "Current Node", selector: "current_node.id", sortable: true },
+        { name: "Planned path", selector: "planned_path", cell: row => <pre>{JSON.stringify(row.planned_path)}</pre>},
+        { name: "Planned node id", selector: "planned_node_id", sortable: true },
+        { name: "Progress", selector: "progress", },
+        { name: "Raw data", cell: row => <pre>{JSON.stringify(row)}</pre> }
+      ]} data={armies} dense={true} />
     </TabPanel>
     <TabPanel value={value} index={1}>
       Item Two
@@ -71,8 +85,21 @@ function AnalyzeDialogueContent() {
   </>;
 }
 
+function PaperComponent(props: PaperProps) {
+  return (
+    <Draggable handle="#draggable-dialog-title" cancel={'[class*="MuiDialogContent-root"]'}>
+      <Paper {...props} />
+    </Draggable>
+  );
+}
+
 export function AnalyzeDialogue(props: { onClose: () => void, open: boolean }) {
-  return (<Dialog fullWidth maxWidth="lg" open={props.open} onClose={props.onClose} aria-labelledby="form-dialog-title">
+  return (<Dialog
+      hideBackdrop disableBackdropClick fullWidth maxWidth="lg"
+      PaperComponent={PaperComponent}
+      open={props.open}
+      onClose={props.onClose} aria-labelledby="form-dialog-title"
+    >
       <DialogTitle id="form-dialog-title">Analyze</DialogTitle>
       <DialogContent>
         <DialogContentText>

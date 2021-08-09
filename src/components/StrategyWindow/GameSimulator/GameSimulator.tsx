@@ -107,17 +107,20 @@ export function GameSimulator(props: GameSimulatorProps) {
   }
 
   useInterval(() => {
-    if (localGameState !== null && localGameState.running) {
-      dispatchLocalAction({ type: "tick" });
-    }
+    if (gameSession) {
 
-    const currTime = Date.now();
-    if (currTime + HEARTBEAT_TIME_INTERVAL > lastHeartbeatMs
-      || localGameState.tick + HEARTBEAT_TICK_INTERVAL > lastHeartbeatTick) {
+      if (localGameState !== null && localGameState.running) {
+        dispatchLocalAction({type: "tick"});
+      }
 
-      heartbeat();
-      setLastHeartbeatMs(currTime);
-      setLastHeartbeatTick(localGameState.tick);
+      const currTime = Date.now();
+      if (currTime + HEARTBEAT_TIME_INTERVAL > lastHeartbeatMs
+        || localGameState.tick + HEARTBEAT_TICK_INTERVAL > lastHeartbeatTick) {
+
+        heartbeat();
+        setLastHeartbeatMs(currTime);
+        setLastHeartbeatTick(localGameState.tick);
+      }
     }
 
   }, GAME_CLOCK_SPEED);
