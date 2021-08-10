@@ -1,18 +1,18 @@
 import React, {Suspense} from "react";
 import Sphere from "../Scene/Sphere";
 import {ObjectLoader} from "../Scene/ObjectLoader";
-// @ts-ignore
-//import * as THREE from "three/build/three.module";
 import {Vector3} from "../Scene/Types";
-//import Cylinder2 from "../Scene/Cylinder2";
 import {MouseEvent} from "react-three-fiber";
-//import {Circle} from "@react-three/drei";
 
 interface SoliderProps {
   position?: Vector3;
   selected: boolean;
   onSelect?: (event: MouseEvent) => void;
 }
+
+// TODO Animated solider and stuff:
+//  Take a look at below tutorial and Archer and Paladin models on mixamo.com:
+//  https://codeworkshop.dev/blog/2021-01-20-react-three-fiber-character-animation/
 
 export const Soldier = ({position, selected, onSelect}: SoliderProps) => {
   // var hitGeom = new THREE.BoxBufferGeometry(1, 1, 1);
