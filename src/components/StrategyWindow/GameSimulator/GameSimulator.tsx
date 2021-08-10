@@ -140,9 +140,6 @@ export function GameSimulator(props: GameSimulatorProps) {
   useEffect(() => {
     if(data && data.game_events.length > 0) {
       const regular_events = data.game_events.filter(ev => ev.type !== "heartbeat");
-      if(regular_events.length > 0) {
-        console.log("events to handle:", regular_events.map(({id}) => id));
-      }
       regular_events.forEach((ev) => {
         if(ev.type !== "heartbeat") {
           dispatchLocalAction({

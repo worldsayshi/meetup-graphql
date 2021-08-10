@@ -16,7 +16,6 @@ import {
 } from "@material-ui/core";
 import {useGameStateContext} from "../GameSimulator/Context";
 import DataTable from 'react-data-table-component';
-import Draggable from 'react-draggable';
 
 function TabPanel(props: {
   children: ReactNode,
@@ -85,18 +84,9 @@ function AnalyzeDialogueContent() {
   </>;
 }
 
-function PaperComponent(props: PaperProps) {
-  return (
-    <Draggable handle="#draggable-dialog-title" cancel={'[class*="MuiDialogContent-root"]'}>
-      <Paper {...props} />
-    </Draggable>
-  );
-}
 
 export function AnalyzeDialogue(props: { onClose: () => void, open: boolean }) {
-  return (<Dialog
-      hideBackdrop disableBackdropClick fullWidth maxWidth="lg"
-      PaperComponent={PaperComponent}
+  return (<Dialog fullWidth maxWidth="lg"
       open={props.open}
       onClose={props.onClose} aria-labelledby="form-dialog-title"
     >
