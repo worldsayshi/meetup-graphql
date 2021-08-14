@@ -91,12 +91,11 @@ export function localGameStateReducer(gameState: LocalGameState, action: LocalGa
     case "initialize":
       return action.initialState;
     case "tick":
-      console.warn("tick not implemented")
-
       return performStep(gameState);
     case "select_army":
       return {...gameState, selectedArmy: action.selectedArmy};
     case "set_running":
+      console.log("set_running", action);
       return {...gameState, running: action.running};
     case "set_army_target":
       return {...gameState, armyLookup: {

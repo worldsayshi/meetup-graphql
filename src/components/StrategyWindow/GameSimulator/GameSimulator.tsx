@@ -77,6 +77,9 @@ export function GameSimulator(props: GameSimulatorProps) {
 
   const [outgoingActionQueue, setOutgoingActionQueue] = useState<SharedGameAction[]>([]);
   function dispatchSharedAction (action: SharedGameAction) {
+    // TODO Bug: The issue is that the dispatched shared action doesn't end up in hasura. Why?
+    //
+    console.log("dispatchSharedAction", action);
     setOutgoingActionQueue([...outgoingActionQueue, action]);
   }
 
@@ -102,6 +105,7 @@ export function GameSimulator(props: GameSimulatorProps) {
       })),
     ];
 
+    console.log("nr event worker posted events", gameEvents.length);
     eventWorker.postMessage(JSON.stringify(gameEvents));
     setOutgoingActionQueue([]);
   }
@@ -128,7 +132,7 @@ export function GameSimulator(props: GameSimulatorProps) {
 
 
   /// --- Read events
-  const [lastHandledEvent, setLastHandledEvent] = useState<number>();
+  const [lastHandledEvent, setLastHandledEvent] = useState<number>(0);
   const { data } = useGameEventsSubscription({
     variables: {
       after_game_event_id: lastHandledEvent,
@@ -136,6 +140,7 @@ export function GameSimulator(props: GameSimulatorProps) {
     },
     skip: !gameSession
   });
+  //console.log("game events", data?.game_events.map(e => e.type));
 
   useEffect(() => {
     if(data && data.game_events.length > 0) {
@@ -156,7 +161,12 @@ export function GameSimulator(props: GameSimulatorProps) {
   /// --- Render
   if(localGameState && gameSession && gameClient) {
     return (
-      <GameStateContext.Provider value={{ gameState: localGameState, dispatchLocalAction, dispatchSharedAction, gameClient }}>
+      <GameStateContext.Provider value={{
+        gameState: localGameState,
+        dispatchLocalAction,
+        dispatchSharedAction,
+        gameClient
+      }}>
         {props.children}
       </GameStateContext.Provider>
     );

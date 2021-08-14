@@ -11,9 +11,13 @@ query GameLobby {
 }
 
 subscription GameEvents($game_session_id: Int, $after_game_event_id: Int) {
-  game_events(where: {
-    id: {_gt: $after_game_event_id},
-    game_session_id: {_eq: $game_session_id}}) {
+  game_events(
+    where: {
+    	id: {_gt: $after_game_event_id},
+    	game_session_id: {_eq: $game_session_id}
+    },
+    order_by: { id: desc }
+  ) {
     ...GameEvent
   }
 }
