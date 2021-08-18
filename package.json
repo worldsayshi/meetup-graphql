@@ -44,7 +44,7 @@
   "scripts": {
     "start": "react-app-rewired start",
     "build": "react-app-rewired build",
-    "test": "react-app-rewired  test",
+    "test": "react-app-rewired test",
     "codegen": "graphql-codegen --config codegen.yml",
     "cosmos": "cross-env FAST_REFRESH=false cosmos",
     "cosmos:export": "cosmos-export"
