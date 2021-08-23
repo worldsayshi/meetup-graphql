@@ -14,6 +14,11 @@
 3. Start console - `cd <name> && hasura console`
 4. Start gui - `yarn start dev`
 
+### Use existing
+
+1. `hasura migrate apply`
+2. `hasura metadata apply`
+
 
 ### Presentation plan
 
