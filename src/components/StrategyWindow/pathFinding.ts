@@ -1,10 +1,6 @@
 import {EdgeLookup, NodesLookup} from "./GameSimulator/LocalGameState";
 import {NodeFragment} from "../../generated/graphql";
-import {addOpenPath, getAdjacencies} from "./pathFinding.util";
-
-export function distance(pos1: [number, number, number], pos2: [number, number, number]) {
-  return Math.sqrt((pos1[0]-pos2[0])**2+(pos1[2]-pos2[2])**2);
-}
+import {distance, getAdjacencies} from "./pathFinding.util";
 
 
 interface FindPathArgs {

@@ -7,13 +7,6 @@ export function getAdjacencies(args: { edgeLookup: EdgeLookup; node_id: any }): 
     .map(edge => edge.to.id === args.node_id ? edge.from : edge.to);
 }
 
-interface AddOpenPathArgs {
-  openPaths: [{ estCost: number; path: number[] }];
-  newPath: { path: number[]; estCost: number };
-}
-
-// Add a new path to the list sorted by cost
-export function addOpenPath({}: AddOpenPathArgs) {
-
-  return [{estCost: 0, path: []}];
+export function distance(pos1: [number, number, number], pos2: [number, number, number]) {
+  return Math.sqrt((pos1[0]-pos2[0])**2+(pos1[2]-pos2[2])**2);
 }
