@@ -85,23 +85,23 @@ fragment Session on game_sessions {
   id
   uuid
 	elapsed_ticks
-  session_config {
-    ...SessionConfig
-  }
-  nodes {
-    ...Node
-  }
-  edges {
-    ...Edge
+  map {
+    ...Map
   }
   armies {
     ...Army
   }
 }
 
-fragment SessionConfig on session_configs {
+fragment Map on maps {
   id
   map_scale
+  nodes {
+    ...Node
+  }
+  edges {
+    ...Edge
+  }
 }
 
 fragment Army on armies {

@@ -1,7 +1,8 @@
-import React, {useContext} from "react";
+import React from "react";
 import Cylinder from "../Scene/Cylinder";
 import {PointerEvent} from "react-three-fiber/canvas";
-import { useGameStateContext } from "../GameSimulator/Context";
+import {useGameStateContext} from "../GameSimulator/Context";
+
 
 export function Nodes() {
   const { gameState, dispatchLocalAction, dispatchSharedAction } = useGameStateContext()

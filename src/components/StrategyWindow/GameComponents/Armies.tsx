@@ -1,10 +1,10 @@
-import React, {useContext} from "react";
+import React from "react";
 import {Soldier} from "./Soldier";
 import {SLine} from "../Scene/QuadLine";
 import {useGameStateContext} from "../GameSimulator/Context";
 
 export function Armies() {
-  const { gameState, dispatchLocalAction, dispatchSharedAction } = useGameStateContext();
+  const { gameState, dispatchLocalAction } = useGameStateContext();
 
   return (
     <>

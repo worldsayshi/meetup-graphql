@@ -1,4 +1,4 @@
-import {EdgeLookup, NodesLookup} from "./GameSimulator/LocalGameState";
+import {EdgeLookup} from "./GameSimulator/LocalGameState";
 import {NodeFragment} from "../../generated/graphql";
 
 export function getAdjacencies(args: { edgeLookup: EdgeLookup; node_id: any }): NodeFragment[] {

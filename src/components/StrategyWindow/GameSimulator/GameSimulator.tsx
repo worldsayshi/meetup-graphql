@@ -45,7 +45,6 @@ export const ACTION_OFFSET = HEARTBEAT_TICK_INTERVAL * 4;
 
 export function GameSimulator(props: GameSimulatorProps) {
 
-
   const [lastHeartbeatMs, setLastHeartbeatMs] = useState(-1);
   const [lastHeartbeatTick, setLastHeartbeatTick] = useState(-1);
 

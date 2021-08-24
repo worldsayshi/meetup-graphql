@@ -17,7 +17,6 @@ export function SceneWrapper(props: SceneWrapperProps) {
   const {
     children,
     onPointerUp,
-    onClick,
     pointerMoved,
     orbitEnabled = true,
     bridgeContexts = [],

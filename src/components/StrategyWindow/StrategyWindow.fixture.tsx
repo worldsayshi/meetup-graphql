@@ -18,7 +18,7 @@ const LinkItem = ({ id, uuid }: { id: number, uuid: string }) => {
   return <ListItem key={id} button component={CustomLink} />;
 }
 
-function SessionSelection() {
+function GameLobby() {
   const { data } = useGameLobbyQuery();
   return data ? <Container maxWidth="sm">
     <Box my={4}>
@@ -45,7 +45,7 @@ const StrategyWindowFixture = () => {
                 <StrategyWindow />
               </Route>
               <Route path="/">
-                <SessionSelection />
+                <GameLobby />
               </Route>
             </Switch>
           </div>

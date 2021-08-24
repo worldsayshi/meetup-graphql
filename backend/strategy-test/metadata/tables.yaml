@@ -24,9 +24,9 @@
   - name: from
     using:
       foreign_key_constraint_on: from_id
-  - name: session
+  - name: map
     using:
-      foreign_key_constraint_on: session_id
+      foreign_key_constraint_on: map_id
   - name: to
     using:
       foreign_key_constraint_on: to_id
@@ -40,9 +40,9 @@
     schema: public
     name: game_sessions
   object_relationships:
-  - name: session_config
+  - name: map
     using:
-      foreign_key_constraint_on: session_config_id
+      foreign_key_constraint_on: map_id
   array_relationships:
   - name: armies
     using:
@@ -51,13 +51,6 @@
         table:
           schema: public
           name: armies
-  - name: edges
-    using:
-      foreign_key_constraint_on:
-        column: session_id
-        table:
-          schema: public
-          name: edges
   - name: nations
     using:
       foreign_key_constraint_on:
@@ -65,10 +58,28 @@
         table:
           schema: public
           name: nations
+- table:
+    schema: public
+    name: maps
+  array_relationships:
+  - name: edges
+    using:
+      foreign_key_constraint_on:
+        column: map_id
+        table:
+          schema: public
+          name: edges
+  - name: game_sessions
+    using:
+      foreign_key_constraint_on:
+        column: map_id
+        table:
+          schema: public
+          name: game_sessions
   - name: nodes
     using:
       foreign_key_constraint_on:
-        column: session_id
+        column: map_id
         table:
           schema: public
           name: nodes
@@ -91,9 +102,9 @@
     schema: public
     name: nodes
   object_relationships:
-  - name: session
+  - name: map
     using:
-      foreign_key_constraint_on: session_id
+      foreign_key_constraint_on: map_id
   array_relationships:
   - name: armies
     using:
@@ -116,6 +127,3 @@
         table:
           schema: public
           name: edges
-- table:
-    schema: public
-    name: session_configs

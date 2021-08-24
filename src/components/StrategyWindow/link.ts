@@ -1,8 +1,5 @@
-
-
-import { split, HttpLink } from '@apollo/client';
-import { getMainDefinition } from '@apollo/client/utilities';
-import { WebSocketLink } from '@apollo/client/link/ws';
+import {HttpLink, split} from '@apollo/client';
+import {WebSocketLink} from '@apollo/client/link/ws';
 
 const httpLink = new HttpLink({
   uri: 'http://localhost:8080/v1/graphql'
@@ -22,7 +19,7 @@ const wsLink = new WebSocketLink({
 // * The Link to use for an operation if the function returns a "falsy" value
 export const link = split(
   ({ query }) => {
-    const definition = getMainDefinition(query);
+    //const definition = getMainDefinition(query);
     return (
 
       true

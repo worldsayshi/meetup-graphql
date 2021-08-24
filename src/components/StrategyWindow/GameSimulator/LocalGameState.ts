@@ -16,7 +16,6 @@ export type NodesLookup = Lookup<NodeFragment>;
 export type ArmyLookup = Lookup<ArmyFragment>;
 export type EdgeLookup = Lookup<EdgeFragment>;
 
-
 function toLookup<T extends { id: number }>(ts: T[]) {
   return ts.reduce((lookup: Lookup<T>, t) => {
     lookup[t.id] = t;
@@ -64,11 +63,11 @@ export type LocalGameAction = {
 
 export function initializeLocalGameState(gameSession?: SessionFragment): LocalGameState {
 
-  const nodesLookup = gameSession ? toLookup(gameSession.nodes) : {};
+  const nodesLookup = gameSession ? toLookup(gameSession.map.nodes) : {};
   const armyLookup = gameSession ? toLookup(gameSession.armies) : {};
-  const edgeLookup = gameSession ? toLookup(gameSession.edges) : {};
+  const edgeLookup = gameSession ? toLookup(gameSession.map.edges) : {};
   return {
-    mapScale: gameSession?.session_config.map_scale ?? 1,
+    mapScale: gameSession?.map.map_scale ?? 1,
     tick: gameSession?.elapsed_ticks ?? 0,
     running: false,
 

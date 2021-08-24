@@ -1,6 +1,7 @@
 import {ArmyFragment} from "../../../generated/graphql";
 import {ArmyLookup, LocalGameState} from "./LocalGameState";
-import {distance} from "../pathFinding";
+import {distance} from "../pathFinding.util";
+import {keys} from "./utils";
 
 /*function distance(pos1: [number, number, number], pos2: [number, number, number]) {
   return Math.sqrt((pos1[0]-pos2[0])**2+(pos1[2]-pos2[2])**2);
@@ -31,7 +32,7 @@ export function performStep(gameState: LocalGameState): LocalGameState {
   * */
 
   // 1. Progress armies
-  let movedArmies = Object.keys(gameState.armyLookup).reduce((ma, key) => {
+  let movedArmies = keys(gameState.armyLookup).reduce((ma, key: number) => {
     const army: ArmyFragment = gameState.armyLookup[key];
     const speed = army.army_type?.speed;
     return {
@@ -44,7 +45,7 @@ export function performStep(gameState: LocalGameState): LocalGameState {
   }, {} as ArmyLookup);
 
   // 2. Move armies to next node if applicable
-  movedArmies = Object.keys(movedArmies).reduce((ma, key) => {
+  movedArmies = keys(movedArmies).reduce((ma, key) => {
     const army: ArmyFragment = movedArmies[key];
     const current_node = army.current_node;
     const planned_node = gameState.nodesLookup[army.planned_node_id];

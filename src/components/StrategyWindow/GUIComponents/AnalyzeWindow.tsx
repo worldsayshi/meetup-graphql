@@ -8,8 +8,6 @@ import {
   DialogContent,
   DialogContentText,
   DialogTitle,
-  Paper,
-  PaperProps,
   Tab,
   Tabs,
   Typography
