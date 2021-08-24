@@ -10,14 +10,14 @@ import {SharedGameAction} from "./GameSimulator";
 
 
 export type Lookup<T> = {
-  [key: string]: T;
+  [key: number]: T;
 }
 export type NodesLookup = Lookup<NodeFragment>;
 export type ArmyLookup = Lookup<ArmyFragment>;
 export type EdgeLookup = Lookup<EdgeFragment>;
 
 
-function toLookup<T extends { id: string | number }>(ts: T[]) {
+function toLookup<T extends { id: number }>(ts: T[]) {
   return ts.reduce((lookup: Lookup<T>, t) => {
     lookup[t.id] = t;
     return lookup;
