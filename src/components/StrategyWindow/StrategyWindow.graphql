@@ -8,6 +8,19 @@ query GameLobby {
   game_sessions {
     ...Session
   }
+  maps {
+    id
+    name
+  }
+}
+
+mutation createMap($name: String, $map_scale: numeric) {
+  insert_maps(objects: [{ name: $name, map_scale: $map_scale }]) {
+    returning {
+      id
+      name
+    }
+  }
 }
 
 subscription GameEvents($game_session_id: Int, $after_game_event_id: Int) {

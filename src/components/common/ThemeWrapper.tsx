@@ -1,6 +1,7 @@
 import React, {createContext, ReactNode, useEffect, useMemo} from "react";
 import CssBaseline from "@material-ui/core/CssBaseline";
 import { createTheme, ThemeProvider } from '@material-ui/core/styles';
+import {SnackbarProvider} from "notistack";
 
 const themeLight = createTheme({
   palette: {
@@ -39,12 +40,15 @@ export function ThemeWrapper(props: { children: ReactNode }) {
 
   return (
     <ThemeProvider theme={lightMode ? themeLight : themeDark}>
+
       <CssBaseline />
       {/*<Button onClick={() => setLightMode(prev => !prev)}>Toggle Theme</Button>*/}
       <ThemeContext.Provider value={{
         lightMode, setLightMode
       }}>
-        {props.children}
+        <SnackbarProvider maxSnack={3}>
+          {props.children}
+        </SnackbarProvider>
       </ThemeContext.Provider>
     </ThemeProvider>
   );

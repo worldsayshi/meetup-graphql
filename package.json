@@ -19,6 +19,7 @@
     "graphql": "^15.5.0",
     "ngraph.forcelayout": "^3.0.1",
     "ngraph.graph": "^19.1.0",
+    "notistack": "^1.0.10",
     "react": "^17.0.1",
     "react-app-rewired": "^2.1.8",
     "react-data-table-component": "^7.0.0-rc2",
