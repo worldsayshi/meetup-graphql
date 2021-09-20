@@ -5,11 +5,8 @@ import {ThemeWrapper} from "../common/ThemeWrapper";
 import {BrowserRouter as Router, Route, Switch} from "react-router-dom";
 import {client} from "./client";
 import {GameLobby} from "./GameLobby";
+import {MapEditor} from "./MapEditor";
 
-
-function MapEditor() {
-  return <div>TODO: Map editor</div>;
-}
 
 const StrategyWindowFixture = () => {
 

@@ -30,3 +30,12 @@
 6. Implement the ChatWindow backend with Hasura
 7. Show the Strategy game example with pre-implemented backend
 8. Maybe show a postgres function or view in use in the game?
+
+# TODO
+
+## Editor
+
+- GUI elements: Add Top bar and Scene view
+- Implemnt Editor "simulator" based on GameSimulator
+  - localGameStateReducer -> localEditorStateReducer
+  - 
