@@ -38,4 +38,10 @@
 - GUI elements: Add Top bar and Scene view
 - Implemnt Editor "simulator" based on GameSimulator
   - localGameStateReducer -> localEditorStateReducer
-  - 
+
+Make nodes and edges constext reusable
+- Split out nodesLookup and edgeLookup from LocalGameState
+- Split the same from GameContext
+- Adapt uses of the context in the game components
+- Add MapStateContext
+- Add MapState context to editor

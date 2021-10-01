@@ -7,21 +7,9 @@ import {
 import {Vector3} from "../Scene/Types";
 import {performStep} from "./performStep";
 import {SharedGameAction} from "./GameSimulator";
+import {Lookup, toLookup} from "../MapEditor/Lookup";
 
-
-export type Lookup<T> = {
-  [key: number]: T;
-}
-export type NodesLookup = Lookup<NodeFragment>;
 export type ArmyLookup = Lookup<ArmyFragment>;
-export type EdgeLookup = Lookup<EdgeFragment>;
-
-function toLookup<T extends { id: number }>(ts: T[]) {
-  return ts.reduce((lookup: Lookup<T>, t) => {
-    lookup[t.id] = t;
-    return lookup;
-  }, {});
-}
 
 export interface LocalGameState {
   mapScale: number;
@@ -34,10 +22,7 @@ export interface LocalGameState {
   dragging: boolean;
 
   selectedArmy: number | null;
-
-  nodesLookup: NodesLookup;
   armyLookup: ArmyLookup;
-  edgeLookup: EdgeLookup;
 }
 
 
@@ -61,11 +46,10 @@ export type LocalGameAction = {
 };
 
 
+
 export function initializeLocalGameState(gameSession?: SessionFragment): LocalGameState {
 
-  const nodesLookup = gameSession ? toLookup(gameSession.map.nodes) : {};
   const armyLookup = gameSession ? toLookup(gameSession.armies) : {};
-  const edgeLookup = gameSession ? toLookup(gameSession.map.edges) : {};
   return {
     mapScale: gameSession?.map.map_scale ?? 1,
     tick: gameSession?.elapsed_ticks ?? 0,
@@ -77,9 +61,7 @@ export function initializeLocalGameState(gameSession?: SessionFragment): LocalGa
 
     selectedArmy: null,
 
-    nodesLookup,
     armyLookup,
-    edgeLookup,
     // nodes: gameSession.nodes,
     // armies: gameSession.armies,
   };
