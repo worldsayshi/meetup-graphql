@@ -2,8 +2,10 @@ import React from "react";
 import {Soldier} from "./Soldier";
 import {SLine} from "../Scene/QuadLine";
 import {useGameStateContext} from "../GameSimulator/Context";
+import {useMapContext} from "../Map/Context";
 
 export function Armies() {
+  const { map } = useMapContext();
   const { gameState, dispatchLocalAction } = useGameStateContext();
 
   return (
@@ -18,11 +20,11 @@ export function Armies() {
               dispatchLocalAction({ type: "select_army", selectedArmy: id });
             }}
           />
-          {gameState.nodesLookup && planned_node_id && <SLine
+          {map.nodesLookup && planned_node_id && <SLine
             color="yellow"
             lineWidth={8}
             start={current_node.position}
-            end={gameState.nodesLookup[planned_node_id]?.position}
+            end={map.nodesLookup[planned_node_id]?.position}
           />}
         </React.Fragment>
       ))}

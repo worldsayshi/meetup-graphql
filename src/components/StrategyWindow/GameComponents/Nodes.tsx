@@ -2,9 +2,11 @@ import React from "react";
 import Cylinder from "../Scene/Cylinder";
 import {PointerEvent} from "react-three-fiber/canvas";
 import {useGameStateContext} from "../GameSimulator/Context";
+import {useMapContext} from "../Map/Context";
 
 
 export function Nodes() {
+  const { map } = useMapContext();
   const { gameState, dispatchLocalAction, dispatchSharedAction } = useGameStateContext()
 
   if(!gameState) {
@@ -16,7 +18,7 @@ export function Nodes() {
   } = gameState;
 
   return <>
-    {Object.values(gameState.nodesLookup).map((node) => (
+    {Object.values(map.nodesLookup).map((node) => (
       <Cylinder
         key={"node_"+node.id}
         onRightPointerDown={() => {

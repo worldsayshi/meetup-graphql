@@ -10,7 +10,7 @@ function EditorScene() {
 }
 
 export function MapEditor() {
-  return <EditorSimulator noSessionFallback={<div>Loading</div>}>
+  return <EditorSimulator fallback={<div>Loading</div>}>
     <TopEditorBar />
     <EditorScene />
   </EditorSimulator>;

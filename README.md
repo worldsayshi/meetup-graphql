@@ -40,6 +40,11 @@
   - localGameStateReducer -> localEditorStateReducer
 
 Make nodes and edges constext reusable
+
+Attempt 2:
+- Turn th
+
+Attempt 1:
 - Split out nodesLookup and edgeLookup from LocalGameState
 - Split the same from GameContext
 - Adapt uses of the context in the game components
