@@ -1,14 +1,15 @@
 import {ArmyFragment} from "../../../generated/graphql";
-import {ArmyLookup, LocalGameState} from "./LocalGameState";
+import {PieceLookup, LocalGameState} from "./LocalGameState";
 import {distance} from "../pathFinding.util";
 import {keys} from "./utils";
+import {LocalSceneState} from "../Scene/SceneContext";
 
 /*function distance(pos1: [number, number, number], pos2: [number, number, number]) {
   return Math.sqrt((pos1[0]-pos2[0])**2+(pos1[2]-pos2[2])**2);
 }*/
 
 // Maybe "Tick" should be a redux event instead...
-export function performStep(gameState: LocalGameState): LocalGameState {
+export function performStep(gameState: LocalSceneState): LocalSceneState {
 
   /*
   TODO: Think about how heartbeat and army movement meshes
@@ -32,8 +33,8 @@ export function performStep(gameState: LocalGameState): LocalGameState {
   * */
 
   // 1. Progress armies
-  let movedArmies = keys(gameState.armyLookup).reduce((ma, key: number) => {
-    const army: ArmyFragment = gameState.armyLookup[key];
+  let movedArmies = keys(gameState.pieceLookup).reduce((ma, key: number) => {
+    const army: ArmyFragment = gameState.pieceLookup[key];
     const speed = army.army_type?.speed;
     return {
       ...ma,
@@ -42,7 +43,7 @@ export function performStep(gameState: LocalGameState): LocalGameState {
         progress: army.current_node.id !== army.planned_node_id ? army.progress + speed : 0,
       },
     };
-  }, {} as ArmyLookup);
+  }, {} as PieceLookup);
 
   // 2. Move armies to next node if applicable
   movedArmies = keys(movedArmies).reduce((ma, key) => {
@@ -68,11 +69,11 @@ export function performStep(gameState: LocalGameState): LocalGameState {
         ...army,
       },
     };
-  }, {} as ArmyLookup);
+  }, {} as PieceLookup);
 
   return {
     ...gameState,
-    armyLookup: movedArmies,
+    pieceLookup: movedArmies,
     tick: gameState.running ? gameState.tick + 1 : gameState.tick,
   };
 }

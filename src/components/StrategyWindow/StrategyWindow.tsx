@@ -6,28 +6,27 @@ import {TopGameBar} from "./GUIComponents/TopGameBar";
 import {Edges} from "./GameComponents/Edges";
 import {Nodes} from "./GameComponents/Nodes";
 import {Armies} from "./GameComponents/Armies";
-import {GameStateContext, useGameStateContext} from "./GameSimulator/Context";
+import {SceneContext, useSceneContext} from "./Scene/SceneContext";
 
 
 function Scene() {
-   const gameStateContext = useGameStateContext();
+   const sceneStateContext = useSceneContext();
 
-   if(!gameStateContext) {
+   if(!sceneStateContext) {
      return null;
    }
 
   const {
-    gameState: {
+    state: {
       dragging,
       dragNode,
       dragPoint,
     },
     dispatchLocalAction,
-  } = gameStateContext;
-
+  } = sceneStateContext;
 
   return <SceneWrapper
-    bridgeContexts={[GameStateContext]}
+    bridgeContexts={[SceneContext]}
     orbitEnabled={!dragging}
     pointerMoved={(point) => {
       if(dragging) {

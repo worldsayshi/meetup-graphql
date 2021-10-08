@@ -7,9 +7,9 @@ import BrightnessHighIcon from "@material-ui/icons/BrightnessHigh";
 import BrightnessLowIcon from "@material-ui/icons/BrightnessLow";
 import TimerIcon from '@material-ui/icons/Timer';
 import InfoIcon from '@material-ui/icons/Info';
-import {useGameStateContext} from "../GameSimulator/Context";
 import AssessmentIcon from '@material-ui/icons/Assessment';
 import {AnalyzeDialogue} from "./AnalyzeWindow";
+import {useSceneContext} from "../Scene/SceneContext";
 
 function AnalyzeButton() {
   const [showDebuggingPopup, setShowDebuggingPopup] = useState<boolean>(false);
@@ -27,16 +27,16 @@ function AnalyzeButton() {
 }
 
 export function TopGameBar() {
-  const { gameState, dispatchSharedAction, gameClient } = useGameStateContext();
+  const { state: sceneState, dispatchSharedAction } = useSceneContext();
 
   const themeContext = useContext(ThemeContext);
   return (
     <AppBar position="static">
       <Toolbar>
         <IconButton edge="start" color="inherit" aria-label="play" onClick={() => {
-          dispatchSharedAction({ type: "set_running", running: !gameState.running });
+          dispatchSharedAction({ type: "set_running", running: !sceneState.running });
         }}>
-          {gameState && (gameState.running ? <PauseIcon /> : <PlayArrowIcon/>)}
+          {sceneState && (sceneState.running ? <PauseIcon /> : <PlayArrowIcon/>)}
         </IconButton>
         <AnalyzeButton />
         {themeContext && <IconButton color="inherit" onClick={
@@ -45,10 +45,10 @@ export function TopGameBar() {
           {themeContext.lightMode ? <BrightnessHighIcon /> : <BrightnessLowIcon />}
         </IconButton>}
 
-        {gameState?.tick}
+        {sceneState?.tick}
         <TimerIcon />
 
-        <Tooltip title={"client id: "+gameClient.id}>
+        <Tooltip title={"hello world"}>
           <InfoIcon />
         </Tooltip>
       </Toolbar>

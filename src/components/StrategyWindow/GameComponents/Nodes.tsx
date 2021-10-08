@@ -1,29 +1,27 @@
 import React from "react";
 import Cylinder from "../Scene/Cylinder";
 import {PointerEvent} from "react-three-fiber/canvas";
-import {useGameStateContext} from "../GameSimulator/Context";
-import {useMapContext} from "../Map/Context";
+import {useSceneContext} from "../Scene/SceneContext";
 
 
 export function Nodes() {
-  const { map } = useMapContext();
-  const { gameState, dispatchLocalAction, dispatchSharedAction } = useGameStateContext()
+  const { state, dispatchLocalAction, dispatchSharedAction } = useSceneContext()
 
-  if(!gameState) {
+  if(!state) {
     return null;
   }
 
   const {
-    selectedArmy
-  } = gameState;
+    selectedPiece
+  } = state;
 
   return <>
-    {Object.values(map.nodesLookup).map((node) => (
+    {Object.values(state.nodesLookup).map((node) => (
       <Cylinder
         key={"node_"+node.id}
         onRightPointerDown={() => {
-          if (typeof selectedArmy === "number") {
-            dispatchSharedAction({ type: "set_army_target", armyId: selectedArmy, nodeId: node.id});
+          if (typeof selectedPiece === "number") {
+            dispatchSharedAction({ type: "set_army_target", armyId: selectedPiece, nodeId: node.id});
           }
         }}
         onDragStart={(event: PointerEvent) => {

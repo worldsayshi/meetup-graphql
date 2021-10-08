@@ -1,5 +1,4 @@
 import React, {ReactNode, useEffect, useMemo, useReducer, useState} from "react";
-import {GameStateContext} from "./Context";
 import {
   Game_Events_Insert_Input, useGameEventsSubscription,
   useGameSessionQuery
@@ -9,6 +8,7 @@ import {useParams} from "react-router-dom";
 import {useGameClient} from "./useGameClient";
 import EventWorker from './EventWorker.worker';
 import {initializeLocalGameState, localGameStateReducer} from "./LocalGameState";
+import { SceneContext } from "../Scene/SceneContext";
 
 interface GameSimulatorProps {
   noSessionFallback: ReactNode;
@@ -16,7 +16,7 @@ interface GameSimulatorProps {
 }
 
 
-export type SharedGameAction = {
+export type SharedSceneAction = {
   type: "set_running",
   running: boolean,
 } | {
@@ -74,8 +74,8 @@ export function GameSimulator(props: GameSimulatorProps) {
 
   /// --- Send events
 
-  const [outgoingActionQueue, setOutgoingActionQueue] = useState<SharedGameAction[]>([]);
-  function dispatchSharedAction (action: SharedGameAction) {
+  const [outgoingActionQueue, setOutgoingActionQueue] = useState<SharedSceneAction[]>([]);
+  function dispatchSharedAction (action: SharedSceneAction) {
     // TODO Bug: The issue is that the dispatched shared action doesn't end up in hasura. Why?
     //
     console.log("dispatchSharedAction", action);
@@ -160,14 +160,13 @@ export function GameSimulator(props: GameSimulatorProps) {
   /// --- Render
   if(localGameState && gameSession && gameClient) {
     return (
-      <GameStateContext.Provider value={{
-        gameState: localGameState,
+      <SceneContext.Provider value={{
+        state: localGameState,
         dispatchLocalAction,
         dispatchSharedAction,
-        gameClient
       }}>
         {props.children}
-      </GameStateContext.Provider>
+      </SceneContext.Provider>
     );
   } else {
     return <>

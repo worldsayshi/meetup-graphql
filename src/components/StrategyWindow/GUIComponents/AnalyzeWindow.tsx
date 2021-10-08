@@ -12,8 +12,8 @@ import {
   Tabs,
   Typography
 } from "@material-ui/core";
-import {useGameStateContext} from "../GameSimulator/Context";
 import DataTable from 'react-data-table-component';
+import {useSceneContext} from "../Scene/SceneContext";
 
 function TabPanel(props: {
   children: ReactNode,
@@ -47,14 +47,14 @@ function a11yProps(index: number) {
 }
 
 function AnalyzeDialogueContent() {
-  const { gameState } = useGameStateContext();
+  const { state: gameState } = useSceneContext();
   const [value, setValue] = React.useState(0);
 
   // @ts-ignore
   const handleChange = (event, newValue) => {
     setValue(newValue);
   };
-  let armies = Object.values(gameState.armyLookup);
+  let armies = Object.values(gameState.pieceLookup);
   return <>
     <AppBar position="static">
       <Tabs value={value} onChange={handleChange} aria-label="simple tabs example">

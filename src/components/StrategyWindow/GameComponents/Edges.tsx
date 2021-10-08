@@ -1,19 +1,16 @@
 import {SLine} from "../Scene/QuadLine";
 import React from "react";
-import {useGameStateContext} from "../GameSimulator/Context";
-import {useMapContext} from "../Map/Context";
+import {useSceneContext} from "../Scene/SceneContext";
 
 export function Edges() {
-  const { map } = useMapContext();
-  const gameStateContext = useGameStateContext();
-  const gameState = gameStateContext.gameState;
-  //const gameState = useContext(GameState);
+  const gameStateContext = useSceneContext();
+  const sceneState = gameStateContext.state;
 
-  if(!gameState) {
+  if(!sceneState) {
     return null;
   }
 
-  const edges = Object.values(map.edgeLookup) || []
+  const edges = Object.values(sceneState.edgeLookup) || []
   return (
     <>
       {edges.map(({id, from, to}) => (

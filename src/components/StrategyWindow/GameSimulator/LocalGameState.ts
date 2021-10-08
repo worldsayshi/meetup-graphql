@@ -1,15 +1,15 @@
 import {
   ArmyFragment,
-  EdgeFragment,
   NodeFragment,
   SessionFragment
 } from "../../../generated/graphql";
 import {Vector3} from "../Scene/Types";
 import {performStep} from "./performStep";
-import {SharedGameAction} from "./GameSimulator";
+import {SharedSceneAction} from "./GameSimulator";
 import {Lookup, toLookup} from "../MapEditor/Lookup";
+import {LocalSceneState} from "../Scene/SceneContext";
 
-export type ArmyLookup = Lookup<ArmyFragment>;
+export type PieceLookup = Lookup<ArmyFragment>;
 
 export interface LocalGameState {
   mapScale: number;
@@ -21,12 +21,12 @@ export interface LocalGameState {
   dragPoint: Vector3 | null;
   dragging: boolean;
 
-  selectedArmy: number | null;
-  armyLookup: ArmyLookup;
+  selectedPiece: number | null;
+  pieceLookup: PieceLookup;
 }
 
 
-export type LocalGameAction = {
+export type LocalSceneAction = {
   type: "initialize",
   initialState: LocalGameState,
 } | {
@@ -47,7 +47,7 @@ export type LocalGameAction = {
 
 
 
-export function initializeLocalGameState(gameSession?: SessionFragment): LocalGameState {
+export function initializeLocalGameState(gameSession?: SessionFragment): LocalSceneState {
 
   const armyLookup = gameSession ? toLookup(gameSession.armies) : {};
   return {
@@ -59,30 +59,30 @@ export function initializeLocalGameState(gameSession?: SessionFragment): LocalGa
     dragPoint: null,
     dragging: false,
 
-    selectedArmy: null,
+    selectedPiece: null,
 
-    armyLookup,
+    pieceLookup: armyLookup,
     // nodes: gameSession.nodes,
     // armies: gameSession.armies,
   };
 }
 
-export function localGameStateReducer(gameState: LocalGameState, action: LocalGameAction | SharedGameAction): LocalGameState {
+export function localGameStateReducer(gameState: LocalSceneState, action: LocalSceneAction | SharedSceneAction): LocalSceneState {
   switch (action.type) {
     case "initialize":
       return action.initialState;
     case "tick":
       return performStep(gameState);
     case "select_army":
-      return {...gameState, selectedArmy: action.selectedArmy};
+      return {...gameState, selectedPiece: action.selectedArmy};
     case "set_running":
       console.log("set_running", action);
       return {...gameState, running: action.running};
     case "set_army_target":
-      return {...gameState, armyLookup: {
-        ...gameState.armyLookup,
+      return {...gameState, pieceLookup: {
+        ...gameState.pieceLookup,
         [action.armyId]: {
-          ...gameState.armyLookup[action.armyId],
+          ...gameState.pieceLookup[action.armyId],
           planned_node_id: action.nodeId,
         }
       }};
