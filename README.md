@@ -42,7 +42,12 @@
 Make nodes and edges constext reusable
 
 Attempt 2:
-- Turn th
+- Turn Simulators into Controllers in MVC pattern
+- The Simulators should expose the same interface to the views
+- Let the provider expose this interface. 
+- So the context is the same but with two different providers.
+- This also means that the reducers need to have the same type in both cases.
+- => 
 
 Attempt 1:
 - Split out nodesLookup and edgeLookup from LocalGameState
