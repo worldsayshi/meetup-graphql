@@ -48,6 +48,8 @@ export function initializeLocalGameState(gameSession?: SessionFragment): LocalSc
   };
 }
 
+function never(o: never) {}
+
 export function localGameStateReducer(gameState: LocalSceneState, action: LocalSceneAction | SharedSceneAction): LocalSceneState {
   switch (action.type) {
     case "initialize":
@@ -73,6 +75,8 @@ export function localGameStateReducer(gameState: LocalSceneState, action: LocalS
       return {...gameState, dragNode: action.dragNode};
     case "set_dragging":
       return {...gameState, dragging: action.dragging};
+    default:
+      never(action);
   }
   return gameState;
 }
