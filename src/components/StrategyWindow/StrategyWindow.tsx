@@ -6,7 +6,7 @@ import {TopGameBar} from "./GUIComponents/TopGameBar";
 import {Edges} from "./GameComponents/Edges";
 import {Nodes} from "./GameComponents/Nodes";
 import {Armies} from "./GameComponents/Armies";
-import {SceneContext, useSceneContext} from "./Scene/SceneContext";
+import {SceneContext, useSceneContext} from "./SceneState/SceneContext";
 
 
 function Scene() {

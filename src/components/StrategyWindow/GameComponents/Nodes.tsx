@@ -1,7 +1,7 @@
 import React from "react";
 import Cylinder from "../Scene/Cylinder";
 import {PointerEvent} from "react-three-fiber/canvas";
-import {useSceneContext} from "../Scene/SceneContext";
+import {useSceneContext} from "../SceneState/SceneContext";
 
 
 export function Nodes() {

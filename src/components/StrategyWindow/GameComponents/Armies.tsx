@@ -1,7 +1,7 @@
 import React from "react";
 import {Soldier} from "./Soldier";
 import {SLine} from "../Scene/QuadLine";
-import {useSceneContext} from "../Scene/SceneContext";
+import {useSceneContext} from "../SceneState/SceneContext";
 
 export function Armies() {
   const { state, dispatchLocalAction } = useSceneContext();

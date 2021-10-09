@@ -13,7 +13,7 @@ import {
   Typography
 } from "@material-ui/core";
 import DataTable from 'react-data-table-component';
-import {useSceneContext} from "../Scene/SceneContext";
+import {useSceneContext} from "../SceneState/SceneContext";
 
 function TabPanel(props: {
   children: ReactNode,

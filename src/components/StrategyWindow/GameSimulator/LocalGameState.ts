@@ -1,17 +1,13 @@
-import {
-  ArmyFragment,
-  NodeFragment,
-  SessionFragment
-} from "../../../generated/graphql";
-import {Vector3} from "../Scene/Types";
+import {ArmyFragment, SessionFragment} from "../../../generated/graphql";
 import {performStep} from "./performStep";
-import {SharedSceneAction} from "./GameSimulator";
 import {Lookup, toLookup} from "../MapEditor/Lookup";
-import {LocalSceneState} from "../Scene/SceneContext";
+import {LocalSceneState} from "../SceneState/SceneContext";
+import {LocalSceneAction} from "../SceneState/LocalSceneAction";
+import {SharedSceneAction} from "../SceneState/SharedSceneAction";
 
 export type PieceLookup = Lookup<ArmyFragment>;
 
-export interface LocalGameState {
+/*export interface LocalGameState {
   mapScale: number;
 
   tick: number;
@@ -23,27 +19,7 @@ export interface LocalGameState {
 
   selectedPiece: number | null;
   pieceLookup: PieceLookup;
-}
-
-
-export type LocalSceneAction = {
-  type: "initialize",
-  initialState: LocalSceneState,
-} | {
-  type: "tick"
-} | {
-  type: "set_drag_point",
-  dragPoint: Vector3 | null,
-} | {
-  type: "set_drag_node",
-  dragNode: NodeFragment,
-} | {
-  type: "set_dragging",
-  dragging: boolean,
-} | {
-  type: "select_piece",
-  selectedPiece: number | null,
-};
+}*/
 
 
 

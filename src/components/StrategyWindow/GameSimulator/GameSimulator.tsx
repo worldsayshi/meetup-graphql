@@ -1,6 +1,7 @@
 import React, {ReactNode, useEffect, useMemo, useReducer, useState} from "react";
 import {
-  Game_Events_Insert_Input, useGameEventsSubscription,
+  Game_Events_Insert_Input,
+  useGameEventsSubscription,
   useGameSessionQuery
 } from "../../../generated/graphql";
 import useInterval from "../../common/useInterval";
@@ -8,21 +9,12 @@ import {useParams} from "react-router-dom";
 import {useGameClient} from "./useGameClient";
 import EventWorker from './EventWorker.worker';
 import {initializeLocalGameState, localGameStateReducer} from "./LocalGameState";
-import { SceneContext } from "../Scene/SceneContext";
+import {SceneContext} from "../SceneState/SceneContext";
+import {SharedSceneAction} from "../SceneState/SharedSceneAction";
 
 interface GameSimulatorProps {
   noSessionFallback: ReactNode;
   children: ReactNode;
-}
-
-
-export type SharedSceneAction = {
-  type: "set_running",
-  running: boolean,
-} | {
-  type: "set_army_target",
-  armyId: number,
-  nodeId: number
 }
 
 

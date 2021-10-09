@@ -9,7 +9,7 @@ import TimerIcon from '@material-ui/icons/Timer';
 import InfoIcon from '@material-ui/icons/Info';
 import AssessmentIcon from '@material-ui/icons/Assessment';
 import {AnalyzeDialogue} from "./AnalyzeWindow";
-import {useSceneContext} from "../Scene/SceneContext";
+import {useSceneContext} from "../SceneState/SceneContext";
 
 function AnalyzeButton() {
   const [showDebuggingPopup, setShowDebuggingPopup] = useState<boolean>(false);

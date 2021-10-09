@@ -5,7 +5,7 @@ import {
   SessionFragment
 } from "../../../generated/graphql";
 import {Lookup, toLookup} from "../MapEditor/Lookup";
-import {LocalSceneState} from "../Scene/SceneContext";
+import {LocalSceneState} from "../SceneState/SceneContext";
 
 export type NodesLookup = Lookup<NodeFragment>;
 export type EdgeLookup = Lookup<EdgeFragment>;

@@ -2,7 +2,7 @@ import {ReactNode, useEffect, useState} from "react";
 import {useParams} from "react-router-dom";
 import {useEditorSessionQuery} from "../../../generated/graphql"
 import {initializeMapState, MapState} from "../Map/MapState";
-import {LocalSceneState, SceneContext} from "../Scene/SceneContext";
+import {LocalSceneState, SceneContext} from "../SceneState/SceneContext";
 
 interface EditorSimulatorProps {
   fallback: ReactNode;

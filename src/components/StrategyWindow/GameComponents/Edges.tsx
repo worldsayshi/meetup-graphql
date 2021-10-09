@@ -1,6 +1,6 @@
 import {SLine} from "../Scene/QuadLine";
 import React from "react";
-import {useSceneContext} from "../Scene/SceneContext";
+import {useSceneContext} from "../SceneState/SceneContext";
 
 export function Edges() {
   const gameStateContext = useSceneContext();
