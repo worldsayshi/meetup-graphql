@@ -37,16 +37,16 @@ function Scene() {
         // setDragPoint([point.x, point.y, point.z]);
       }
     }}
-    // onClick={selectedArmy !== null ? ((event) => {
-    //   setSelectedArmy(null);
+    // onClick={selectedPiece !== null ? ((event) => {
+    //   setselectedPiece(null);
     // }): undefined}
     onPointerUp={() => {
       dispatchLocalAction({ type: "set_drag_point", dragPoint: null });
       //setDragPoint(null);
       dispatchLocalAction({ type: "set_dragging", dragging: false });
-      dispatchLocalAction({ type: "select_army", selectedArmy: null });
+      dispatchLocalAction({ type: "select_piece", selectedPiece: null });
       //setDragging(false);
-      //setSelectedArmy(null);
+      //setselectedPiece(null);
     }}>
 
     <Edges />

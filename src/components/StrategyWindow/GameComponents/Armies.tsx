@@ -15,7 +15,7 @@ export function Armies() {
             selected={state.selectedPiece === id}
             position={current_node.position}
             onSelect={() => {
-              dispatchLocalAction({ type: "select_army", selectedArmy: id });
+              dispatchLocalAction({ type: "select_piece", selectedPiece: id });
             }}
           />
           {state.nodesLookup && planned_node_id && <SLine

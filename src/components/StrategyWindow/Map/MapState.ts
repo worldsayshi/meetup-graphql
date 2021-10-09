@@ -5,6 +5,7 @@ import {
   SessionFragment
 } from "../../../generated/graphql";
 import {Lookup, toLookup} from "../MapEditor/Lookup";
+import {LocalSceneState} from "../Scene/SceneContext";
 
 export type NodesLookup = Lookup<NodeFragment>;
 export type EdgeLookup = Lookup<EdgeFragment>;
@@ -23,12 +24,21 @@ function getMap(gameSession: SessionFragment | EditorSessionQuery | undefined): 
   }
 }
 
-export function initializeMapState(gameSession?: SessionFragment | EditorSessionQuery): MapState {
+export function initializeMapState(gameSession?: SessionFragment | EditorSessionQuery): LocalSceneState {
   let map = getMap(gameSession);
   const nodesLookup = map ? toLookup(map.nodes) : {};
   const edgeLookup = map ? toLookup(map.edges) : {};
 
   return {
+    mapScale: map?.map_scale ?? 1,
+    tick: 0,
+    running: false,
+    dragNode: null,
+    dragPoint: null,
+    dragging: false,
+
+    selectedPiece: null,
+    pieceLookup: {},
     nodesLookup,
     edgeLookup,
   };

@@ -28,7 +28,7 @@ export interface LocalGameState {
 
 export type LocalSceneAction = {
   type: "initialize",
-  initialState: LocalGameState,
+  initialState: LocalSceneState,
 } | {
   type: "tick"
 } | {
@@ -41,8 +41,8 @@ export type LocalSceneAction = {
   type: "set_dragging",
   dragging: boolean,
 } | {
-  type: "select_army",
-  selectedArmy: number | null,
+  type: "select_piece",
+  selectedPiece: number | null,
 };
 
 
@@ -50,6 +50,8 @@ export type LocalSceneAction = {
 export function initializeLocalGameState(gameSession?: SessionFragment): LocalSceneState {
 
   const armyLookup = gameSession ? toLookup(gameSession.armies) : {};
+  const nodesLookup = gameSession ? toLookup(gameSession.map.nodes) : {};
+  const edgeLookup = gameSession ? toLookup(gameSession.map.edges) : {};
   return {
     mapScale: gameSession?.map.map_scale ?? 1,
     tick: gameSession?.elapsed_ticks ?? 0,
@@ -62,6 +64,9 @@ export function initializeLocalGameState(gameSession?: SessionFragment): LocalSc
     selectedPiece: null,
 
     pieceLookup: armyLookup,
+
+    nodesLookup,
+    edgeLookup,
     // nodes: gameSession.nodes,
     // armies: gameSession.armies,
   };
@@ -73,8 +78,8 @@ export function localGameStateReducer(gameState: LocalSceneState, action: LocalS
       return action.initialState;
     case "tick":
       return performStep(gameState);
-    case "select_army":
-      return {...gameState, selectedPiece: action.selectedArmy};
+    case "select_piece":
+      return {...gameState, selectedPiece: action.selectedPiece};
     case "set_running":
       console.log("set_running", action);
       return {...gameState, running: action.running};
