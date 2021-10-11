@@ -1,5 +1,5 @@
-import {EdgeLookup} from "./GameSimulator/LocalGameState";
 import {NodeFragment} from "../../generated/graphql";
+import {EdgeLookup} from "./Map/MapState";
 
 export function getAdjacencies(args: { edgeLookup: EdgeLookup; node_id: any }): NodeFragment[] {
   return Object.values(args.edgeLookup)

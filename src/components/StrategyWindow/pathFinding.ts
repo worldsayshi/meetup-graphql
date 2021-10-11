@@ -1,7 +1,6 @@
-import {EdgeLookup, NodesLookup} from "./GameSimulator/LocalGameState";
 import {NodeFragment} from "../../generated/graphql";
 import {distance, getAdjacencies} from "./pathFinding.util";
-
+import {EdgeLookup, NodesLookup} from "./Map/MapState";
 
 interface FindPathArgs {
   fromId: number,

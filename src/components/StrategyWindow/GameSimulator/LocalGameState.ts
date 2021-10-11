@@ -48,7 +48,9 @@ export function initializeLocalGameState(gameSession?: SessionFragment): LocalSc
   };
 }
 
-function never(o: never) {}
+export function never(o: never) {
+  throw new Error("Never happens");
+}
 
 export function localGameStateReducer(gameState: LocalSceneState, action: LocalSceneAction | SharedSceneAction): LocalSceneState {
   switch (action.type) {
