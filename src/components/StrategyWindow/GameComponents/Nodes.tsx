@@ -21,7 +21,7 @@ export function Nodes() {
         key={"node_"+node.id}
         onRightPointerDown={() => {
           if (typeof selectedPiece === "number") {
-            dispatchSharedAction({ type: "set_army_target", armyId: selectedPiece, nodeId: node.id});
+            dispatchSharedAction({ type: "set_piece_target", armyId: selectedPiece, nodeId: node.id});
           }
         }}
         onDragStart={(event: PointerEvent) => {

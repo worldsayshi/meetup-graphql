@@ -19,7 +19,7 @@ export function localEditorStateReducer(sceneState: LocalSceneState, action: Loc
       return {...sceneState, dragging: action.dragging};
     case "select_piece":
     case "set_running":
-    case "set_army_target":
+    case "set_piece_target":
     case "tick":
       console.warn(`${action.type} not supported for editor`);
       return sceneState;

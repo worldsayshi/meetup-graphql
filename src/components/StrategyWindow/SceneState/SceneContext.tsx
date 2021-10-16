@@ -6,7 +6,6 @@ import {PieceLookup} from "../GameSimulator/LocalGameState";
 import {LocalSceneAction} from "./LocalSceneAction";
 import {SharedSceneAction} from "./SharedSceneAction";
 
-
 export interface LocalSceneState {
   mapScale: number;
 

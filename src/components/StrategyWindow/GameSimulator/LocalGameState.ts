@@ -7,25 +7,9 @@ import {SharedSceneAction} from "../SceneState/SharedSceneAction";
 
 export type PieceLookup = Lookup<ArmyFragment>;
 
-/*export interface LocalGameState {
-  mapScale: number;
-
-  tick: number;
-  running: boolean;
-
-  dragNode: NodeFragment | null;
-  dragPoint: Vector3 | null;
-  dragging: boolean;
-
-  selectedPiece: number | null;
-  pieceLookup: PieceLookup;
-}*/
-
-
-
 export function initializeLocalGameState(gameSession?: SessionFragment): LocalSceneState {
 
-  const armyLookup = gameSession ? toLookup(gameSession.armies) : {};
+  const pieceLookup = gameSession ? toLookup(gameSession.armies) : {};
   const nodesLookup = gameSession ? toLookup(gameSession.map.nodes) : {};
   const edgeLookup = gameSession ? toLookup(gameSession.map.edges) : {};
   return {
@@ -39,12 +23,10 @@ export function initializeLocalGameState(gameSession?: SessionFragment): LocalSc
 
     selectedPiece: null,
 
-    pieceLookup: armyLookup,
+    pieceLookup,
 
     nodesLookup,
     edgeLookup,
-    // nodes: gameSession.nodes,
-    // armies: gameSession.armies,
   };
 }
 
@@ -63,7 +45,7 @@ export function localGameStateReducer(gameState: LocalSceneState, action: LocalS
     case "set_running":
       console.log("set_running", action);
       return {...gameState, running: action.running};
-    case "set_army_target":
+    case "set_piece_target":
       return {...gameState, pieceLookup: {
         ...gameState.pieceLookup,
         [action.armyId]: {
