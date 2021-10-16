@@ -5,14 +5,6 @@ import {PointerEvent} from "react-three-fiber/canvas";
 
 
 
-
-/*type CylinderProps = (MeshProps | {
-  onDragStart?: (event: PointerEvent) => void
-}) & {
-  position: Vector3,
-  size?: number
-};*/
-
 interface CylinderProps {
   onDragStart?: (event: PointerEvent) => void;
   position: Vector3;

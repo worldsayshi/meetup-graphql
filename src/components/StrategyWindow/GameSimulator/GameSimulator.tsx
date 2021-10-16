@@ -120,8 +120,6 @@ export function GameSimulator(props: GameSimulatorProps) {
 
   }, GAME_CLOCK_SPEED);
 
-
-
   /// --- Read events
   const [lastHandledEvent, setLastHandledEvent] = useState<number>(0);
   const { data } = useGameEventsSubscription({
@@ -131,7 +129,6 @@ export function GameSimulator(props: GameSimulatorProps) {
     },
     skip: !gameSession
   });
-  //console.log("game events", data?.game_events.map(e => e.type));
 
   useEffect(() => {
     if(data && data.game_events.length > 0) {

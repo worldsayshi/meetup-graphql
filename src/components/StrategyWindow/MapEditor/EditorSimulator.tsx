@@ -18,8 +18,6 @@ interface EditorSimulatorProps {
 export function EditorSimulator (props: EditorSimulatorProps) {
   let { mapId } = useParams<{ mapId: string }>();
   const { data } = useEditorSessionQuery({variables: { mapId: Number(mapId) }});
-  // TODO
-  // const [mapState, setMapState] = useState<LocalSceneState | null>(null);
   
   const [mapState, dispatchLocalAction] = useReducer(
     localEditorStateReducer,
