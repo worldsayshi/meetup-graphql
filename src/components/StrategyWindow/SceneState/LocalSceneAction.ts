@@ -2,6 +2,8 @@ import {LocalSceneState} from "./SceneContext";
 import {Vector3} from "../Scene/Types";
 import {NodeFragment} from "../../../generated/graphql";
 
+type ActionMode = "View" | "MoveNode" | "MovePiece" | "AddNode" | "ConnectNodes";
+
 export type LocalSceneAction = {
   type: "initialize",
   initialState: LocalSceneState,
@@ -19,4 +21,7 @@ export type LocalSceneAction = {
 } | {
   type: "select_piece",
   selectedPiece: number | null,
+} | {
+  type: "set_action_mode",
+  actionMode: ActionMode,
 };

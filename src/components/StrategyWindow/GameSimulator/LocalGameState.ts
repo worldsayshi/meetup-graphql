@@ -59,6 +59,8 @@ export function localGameStateReducer(gameState: LocalSceneState, action: LocalS
       return {...gameState, dragNode: action.dragNode};
     case "set_dragging":
       return {...gameState, dragging: action.dragging};
+    case "set_action_mode":
+      throw new Error("Not supported");
     default:
       never(action);
   }
