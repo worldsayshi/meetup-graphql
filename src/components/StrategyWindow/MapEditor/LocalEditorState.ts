@@ -11,6 +11,7 @@ export function localEditorStateReducer(sceneState: LocalSceneState, action: Loc
     case "initialize":
       return action.initialState;
     case "set_drag_point":
+      // TODO Maybe try moving a dragged node if there is one here?
       return {...sceneState, dragPoint: action.dragPoint};
     case "set_drag_node":
       return {...sceneState, dragNode: action.dragNode};
